@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Exponha a porta que a API está escutando
-EXPOSE 3010
+EXPOSE 8080
 
 # Comando para iniciar a API quando o contêiner for executado
-CMD [ "npm", "start" ]
+CMD [ "npm", "serve" ]

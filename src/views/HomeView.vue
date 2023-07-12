@@ -1,9 +1,9 @@
 <template>
-  <main :class="{ 'modo-escuro': modoEscuroAtivo }">
-    <!-- <div class="column is-one-quarter">
+  <main class="columns is-gapless is-multiline" :class="{ 'modo-escuro': modoEscuroAtivo }">
+    <div class="column is-one-quarter">
       <BarraLateral @aoTemaAlterado="trocarTema" />
-    </div> -->
-    <div >
+    </div>
+    <div class="column is-three-quarter conteudo">
       <RouterView></RouterView>
     </div>
   </main>
@@ -11,17 +11,17 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-//import BarraLateral from "./components/BarraLateral.vue"
-import ITarefa from "./interfaces/ITarefa"
+import BarraLateral from "../components/BarraLateral.vue"
+
 
 // import ServiceForm from './components/ServiceForm.vue';
 // import ClientsDashboard from './components/ClientsDashboard.vue';
 
 
 export default defineComponent({
-  name: 'App',
+  name: 'HomeView',
   components: {
-   // BarraLateral,
+    BarraLateral,
 
   },
   data() {
@@ -51,7 +51,7 @@ main {
 }
 
 main.modo-escuro {
-  --bg-primario: #2b2d42;
+  --bg-primario: #496678;
   --texto-primario: #ddd;
 }
 
