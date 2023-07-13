@@ -73,6 +73,9 @@
   
   <script lang="ts">
   import { defineComponent } from 'vue';
+  import { TipoNotificacao } from "@/interfaces/INotificação";
+ import useNotificador from "@/hooks/notificador"
+ import { useStore } from "@/store";
   
   export default defineComponent({
     data() {
@@ -100,7 +103,7 @@
   
         console.log(data);
   
-        fetch('http://localhost:3010/cadastroclientespost', {
+        fetch('http://177.136.214.131:3010/cadastroclientespost', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -112,6 +115,7 @@
             console.log('Dados enviados com sucesso:', data);
             // Perform any additional actions if necessary
             this.resetForm();
+            this.notificar(TipoNotificacao.SUCESSO, "EXELENTE!", `o cliente salvo com sucesso!`)
           })
           .catch(error => {
             console.error('Erro ao enviar os dados:', error);
@@ -129,7 +133,15 @@
         this.servico = '';
         this.valor = '';
       }
-    }
+    },
+    setup() {
+    const store = useStore();
+    const {notificar} = useNotificador()
+    return {
+      store,
+      notificar
+    };
+  },
   });
   </script>
   

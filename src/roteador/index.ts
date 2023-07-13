@@ -22,8 +22,14 @@ const rotas: RouteRecordRaw[] = [
     path: "/",
     name: "Home",
     component: HomeView,
+    redirect: '/cliente',
     children:
       [
+        {
+          path: "/",
+          name: "Cliente",
+          component: Cliente,
+        },
       {
         path: "/cliente",
         name: "Cliente",

@@ -84,7 +84,7 @@ import ICliente from '../interfaces/ICliente';
 import Box from './Box.vue';
 import ModalDeleteConfirmation from '../modais/DeleteClientModal.vue';
 import ModalEditCliente from '../modais/EditClientModal.vue';
-import ClienteApi from "../metodos/ClienteApi";
+import ClienteApi from "../mixins/ClienteApi";
 
 export default defineComponent({
   name: 'ClienteTeste',
