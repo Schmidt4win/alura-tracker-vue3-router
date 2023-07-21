@@ -6,17 +6,6 @@
     <button class="button" :class="{ 'is-dark': modoEscuroAtivo }" @click="alterarTema">
       {{ textoBotao }}
     </button>
-    <!-- <div class="social-buttons">
-      <a class="social-button" href="https://github.com/Schmidt4win" target="_blank">
-        <i class="fab fa-github"></i> GitHub
-      </a>
-      <a class="social-button" href="https://www.linkedin.com/in/guilherme-schmidt-4413aa201/" target="_blank">
-        <i class="fab fa-linkedin"></i> LinkedIn
-      </a>
-      <a class="social-button" href="https://www.instagram.com/schmidt4win/" target="_blank">
-        <i class="fab fa-instagram"></i> Instagram
-      </a>
-    </div> -->
     <nav class="panel mt-5">
       <ul>
         <li>
@@ -34,12 +23,7 @@
             <i class="fas fa-pen"></i> Cadastro de Serviço
           </RouterLink>
         </li>
-        <!-- <li>
-          <RouterLink to="/login" class="link">
-            <i class="fas fa-key"></i> Login
-          </RouterLink>
-        </li> -->
-        <li>
+         <li>
           <RouterLink to="/cliente" class="link">
             <i class="fas fa-users"></i> Cliente
           </RouterLink>
@@ -112,12 +96,48 @@ header {
   text-align: center;
 }
 
+header {
+  padding: 1rem;
+  background: #496678;
+  text-align: center;
+}
+
 @media only screen and (max-width: 768px) {
   header {
     padding: 2.5rem;
     height: auto;
   }
 }
+
+/* Estilos para dispositivos móveis */
+@media only screen and (max-width: 480px) {
+  header {
+    padding: 1rem;
+  }
+
+  .button {
+    font-size: 0.8rem;
+  }
+
+  .panel {
+    margin-top: 0.5rem;
+  }
+
+  .link {
+    font-size: 0.9rem;
+  }
+
+  .logout-button {
+    margin-top: 0.5rem;
+  }
+}
+
+.social-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
 
 .social-buttons {
   display: flex;

@@ -1,8 +1,12 @@
 <template>
   <main class="columns is-gapless is-multiline" :class="{ 'modo-escuro': modoEscuroAtivo }">
     <div class="column is-one-quarter">
-      <BarraLateral @aoTemaAlterado="trocarTema" />
-
+      <template v-if="isMobile">
+        <BarraLateralMobile @aoTemaAlterado="trocarTema" />
+      </template>
+      <template v-else>
+        <BarraLateral @aoTemaAlterado="trocarTema" />
+      </template>
     </div>
     <div class="column is-three-quarter conteudo">
       <NotificaçõesVue />
@@ -12,29 +16,29 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
+import BarraLateralMobile from "../components/BarraLateralMobile.vue"
 import BarraLateral from "../components/BarraLateral.vue"
 import NotificaçõesVue from '@/components/Notificações.vue';
-
-// import ServiceForm from './components/ServiceForm.vue';
-// import ClientsDashboard from './components/ClientsDashboard.vue';
-
 
 export default defineComponent({
   name: 'HomeView',
   components: {
+    BarraLateralMobile,
     BarraLateral,
     NotificaçõesVue
-},
+  },
   data() {
     return {
-      modoEscuroAtivo: false
+      modoEscuroAtivo: true
     }
   },
-
-
+  computed: {
+    isMobile() {
+      return window.innerWidth <= 768; // Altere o valor conforme sua necessidade
+    }
+  },
   methods: {
-
     trocarTema(modoEscuroAtivo: boolean) {
       this.modoEscuroAtivo = modoEscuroAtivo
     }
@@ -59,4 +63,5 @@ main.modo-escuro {
 
 .conteudo {
   background-color: var(--bg-primario)
-}</style>
+}
+</style>

@@ -1,13 +1,17 @@
 import IProjeto from "@/interfaces/IProjeto";
 import { createStore, Store, useStore as vuexUseStore } from "vuex";
 import { InjectionKey } from "vue";
-import { ADICIONA_PROJETO, ALTERA_PROJETO, EXCLUIR_PROJETO, NOTIFICAR } from "./tipo-mutacoes";
+import { ADICIONA_PROJETO, ALTERA_PROJETO, EXCLUIR_PROJETO, NOTIFICAR, PUT_STATE_CLIENTE } from "./tipo-mutacoes";
 import { INotificação, } from "@/interfaces/INotificação";
+import {GET_CLIENTES} from "./tipo-acoes"
+import http from "@/http"
+import ICliente from "@/interfaces/ICliente";
 
 
 interface Estado {
     projetos: IProjeto[],
     notificacoes: INotificação[],
+    clientes: ICliente[]
 }
 
 export const key: InjectionKey<Estado> = Symbol()
@@ -18,6 +22,9 @@ export const store = createStore<Estado>({
             
         ],
         notificacoes: [
+            
+        ],
+        clientes: [
             
         ]
     },
@@ -37,6 +44,9 @@ export const store = createStore<Estado>({
         [EXCLUIR_PROJETO](state, id: string) {
             state.projetos = state.projetos.filter(proj => proj.id != id)
         },
+        [PUT_STATE_CLIENTE](state, clientes: ICliente[]) {
+            state.clientes = clientes
+        },
         [NOTIFICAR](state, novaNotificação: INotificação) {
             novaNotificação.id = new Date().getTime()
             state.notificacoes.push(novaNotificação)
@@ -45,6 +55,12 @@ export const store = createStore<Estado>({
             }, 3000)
         }
 
+    },
+    actions: {
+        [GET_CLIENTES] ({commit}) {
+            http.get('cadastroclientesget')
+            .then(resposta => commit(PUT_STATE_CLIENTE, resposta.data))
+        }
     }
 })
 

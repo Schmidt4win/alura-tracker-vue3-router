@@ -1,9 +1,6 @@
 <template>
   <main :class="{ 'modo-escuro': modoEscuroAtivo }">
-    <!-- <div class="column is-one-quarter">
-      <BarraLateral @aoTemaAlterado="trocarTema" />
-    </div> -->
-    <div >
+     <div >
       <RouterView></RouterView>
     </div>
   </main>
@@ -11,19 +8,15 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-//import BarraLateral from "./components/BarraLateral.vue"
-import ITarefa from "./interfaces/ITarefa"
 
-// import ServiceForm from './components/ServiceForm.vue';
-// import ClientsDashboard from './components/ClientsDashboard.vue';
+
+
+
 
 
 export default defineComponent({
   name: 'App',
-  components: {
-   // BarraLateral,
-
-  },
+ 
   data() {
     return {
       modoEscuroAtivo: false
