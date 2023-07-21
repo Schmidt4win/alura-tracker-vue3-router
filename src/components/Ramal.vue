@@ -68,8 +68,7 @@
                   <button @click="registerOnu(onu)">Cadastrar</button>
                 </tr>
               </tbody>
-              <tfoot></tfoot>
-            </table>
+              </table>
           </section>
           <footer class="modal-card-foot">
             <button class="button" @click="closeModal">Fechar</button>
@@ -237,7 +236,7 @@ export default defineComponent({
 
 .teste-asul {
   color: aliceblue;
-  background-color: black
+  background-color: black;
 }
 .custom-text-color {
   color: black;
