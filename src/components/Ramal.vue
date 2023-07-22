@@ -1,95 +1,99 @@
 <template>
   <div>
     <div class="search-container">
-      <input
-        class="input"
-        type="text"
-        v-model="searchQuery"
-        placeholder="Procure pelo Ramal"
-      />
+      <input class="input" type="text" v-model="searchQuery" placeholder="Procure pelo Ramal" />
     </div>
     <div class="client-container">
       <Box v-for="ramal in filteredRamais" :key="ramal._id">
         <div class="columns">
           <div class="column">
-            <strong class="label">OLT Ramal:</strong> {{ ramal.oltRamal }}
+            <strong class="label">Ramal:</strong> {{ ramal.oltRamal }}
           </div>
           <div class="column">
-            <strong class="label">OLT IP:</strong> {{ ramal.oltIp }}
+            <strong class="label">OLT:</strong> {{ ramal.oltName }}
           </div>
           <div class="column">
-            <strong class="label">OLT PON:</strong> {{ ramal.oltPon }}
+            <strong class="label">VLAN:</strong> {{ ramal.ponVlan }}
           </div>
           <div class="column">
             <button class="button is-primary" @click="openModal(ramal)">
-              Open Modal
+              Liberar Onu
             </button>
           </div>
         </div>
       </Box>
     </div>
 
-    <div class="modal-overlay" v-if="showModal">
-      <div class="modal is-active">
-        <button
-          class="delete modal-close"
-          aria-label="close"
-          @click="closeModal"
-        ></button>
-        <div class="modal-card">
-          <header class="modal-card-head">
-            <p class="modal-card-title">ONUs:</p>
-          </header>
-          <section class="modal-card-body">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>ONU MAC</th>
-                  <th>GPON</th>
-                  <th>ONU Model</th>
-                  <th>NOME</th>
-                  <th>CADASTRAR</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="onu in onus" :key="onu.onuMac" class="onu-item">
-                  <td>{{ onu.onuMac }}</td>
-                  <td>{{ onu.gpon }}</td>
-                  <td>{{ onu.onuModel }}</td>
-                  <td>
-                    <input
-                      class="input"
-                      type="text"
-                      v-model="onu.onuAlias"
-                      placeholder="Nome do cliente"
-                      name="onuAlias"
-                    />
-                  </td>
-                  <button @click="registerOnu(onu)">Cadastrar</button>
-                </tr>
-              </tbody>
-              </table>
-          </section>
-          <footer class="modal-card-foot">
-            <button class="button" @click="closeModal">Fechar</button>
-          </footer>
-        </div>
-      </div>
-    </div>
-    <div class="modal-overlay" v-if="showJsonModal">
-      <div class="modal is-active json-modal">
-        <button class="delete modal-close" aria-label="close" @click="closeJsonModal"></button>
-        <div class="modal-card json-modal-card">
-          <header class="modal-card-head json-modal-header custom-background">
-            <p class="modal-card-title custom-text-color">ONU LIBERADA COM SUCESSO</p>
-          </header>
-          <section class="modal-card-body json-modal-body custom-terminal-background custom-text-color">
-            <pre class="teste-asul">{{ jsonData }}</pre>
-          </section>
-          <footer class="modal-card-foot json-modal-footer custom-background">
-            <button class="button" @click="closeJsonModal">Fechar</button>
-          </footer>
-        </div>
+    <div class="modal is-active" v-if="showModal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head custom-background">
+      <p class="modal-card-title custom-text-color">ONUs:</p>
+      <button class="delete" aria-label="close" @click="closeModal"></button>
+    </header>
+    <section class="modal-card-body custom-terminal-background custom-text-color">
+      <table class="table is-fullwidth is-bordered is-striped is-narrow">
+        <thead>
+          <tr>
+            <th>ONU MAC</th>
+            <th>GPON</th>
+            <th>ONU Model</th>
+            <th>NOME</th>
+            <th>CADASTRAR</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="onu in onus" :key="onu.onuMac" class="onu-item">
+            <td class="td">{{ onu.onuMac }}</td>
+            <td>{{ onu.gpon }}</td>
+            <td>{{ onu.onuModel }}</td>
+            <td>
+              <input class="input" type="text" v-model="onu.onuAlias" placeholder="Nome do cliente" name="onuAlias" />
+            </td>
+            <td>
+              <button class="button is-primary" @click="registerOnu(onu)">Cadastrar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    <footer class="modal-card-foot custom-background">
+      <button class="button" @click="closeModal">Fechar</button>
+    </footer>
+  </div>
+</div>
+    
+    <div class="modal is-active" v-if="showJsonModal">
+      <div class="modal-background"></div>
+      <div class="modal-card json-modal-card">
+        <header class="modal-card-head custom-background">
+          <p class="modal-card-title custom-text-color">
+            ONU LIBERADA COM SUCESSO
+          </p>
+          <button class="delete" aria-label="close" @click="closeJsonModal"></button>
+        </header>
+        <section class="modal-card-body custom-terminal-background custom-text-color">
+          <div v-for="data in formattedJsonData" :key="data.clienteOnu">
+            <p>
+              <strong>Nome:</strong> {{ data.onuAlias }}
+            </p>
+            <p>
+              <strong>Mac:</strong> {{ data.mac }}
+            </p>
+            <p>
+              <strong>Status:</strong> Online
+            </p>
+            <p>
+              <strong>Rx:</strong> {{ data.tx }}
+            </p>
+            <p>
+              <strong>Tx:</strong> {{ data.rx }}
+            </p>
+          </div>
+        </section>
+        <footer class="modal-card-foot custom-background">
+          <button class="button is-primary" @click="closeJsonModal">Fechar</button>
+        </footer>
       </div>
     </div>
   </div>
@@ -100,8 +104,13 @@ import { defineComponent } from "vue";
 import axios from "axios";
 import IRamal from "../interfaces/IRamal";
 import IOnu from "../interfaces/IOnu";
+import IOnuData from "../interfaces/IOnuData";
 import IStatus from "../interfaces/IStatus";
+import IAuthData from "../interfaces/IAuthData"
 import Box from "./Box.vue";
+import { TipoNotificacao } from "@/interfaces/INotificação";
+import useNotificador from "@/hooks/notificador";
+import { useStore } from "@/store";
 
 export default defineComponent({
   name: "RamalTeste",
@@ -115,12 +124,10 @@ export default defineComponent({
       searchQuery: "",
       showModal: false,
       onus: [] as IOnu[],
-      selectedOltIp: "", // Holds the selected OLT IP
-      selectedOltPon: "", // Holds the selected OLT PON
+      selectedOltIp: "",
       selectedPonVlan: "",
-      onuAlias: "", // Holds the value of the input field for onuAlias
-      showJsonModal: false, // New data property for controlling the JSON modal
-      jsonData: {}, // New data property to store the JSON data
+      showJsonModal: false,
+      jsonData: {} as Record<string, IOnuData>,
     };
   },
   beforeMount() {
@@ -147,6 +154,41 @@ export default defineComponent({
         });
       }
     },
+    formattedJsonData(): Array<{
+      clienteOnu: string;
+      onuAlias: string;
+      mac: string;
+      status: string;
+      tx: string;
+      rx: string;
+    }> {
+      const jsonData = this.jsonData;
+      const formattedData: Array<{
+        clienteOnu: string;
+        onuAlias: string;
+        mac: string;
+        status: string;
+        tx: string;
+        rx: string;
+      }> = [];
+
+      for (const clienteOnu in jsonData) {
+        const data = jsonData[clienteOnu];
+        const onu = this.onus.find((onu) => onu.onuMac === clienteOnu);
+        const formattedItem = {
+          clienteOnu,
+          onuAlias: onu ? onu.onuAlias : 'N/A',
+          mac: clienteOnu,
+          status: data['Status'],
+          tx: data['Power Level'],
+          rx: data['RSSI'],
+        };
+
+        formattedData.push(formattedItem);
+      }
+
+      return formattedData;
+    },
   },
   methods: {
     async fetchRamalData() {
@@ -160,7 +202,7 @@ export default defineComponent({
         console.error("Error fetching ramal data:", error);
       }
     },
-    openJsonModal(data: IStatus) {
+    openJsonModal(data: any) {
       this.jsonData = data;
       this.showJsonModal = true;
     },
@@ -182,10 +224,9 @@ export default defineComponent({
         const data = await response.json();
         this.onus = data.map((onu: IOnu) => ({
           ...onu,
-          onuAlias: "", // Initialize onuAlias for each onu object
+          onuAlias: "",
         }));
         this.selectedOltIp = ramal.oltIp;
-        this.selectedOltPon = ramal.oltPon;
         this.selectedPonVlan = ramal.ponVlan;
         this.showModal = true;
       } catch (error) {
@@ -197,35 +238,62 @@ export default defineComponent({
     },
     async registerOnu(onu: IOnu) {
   try {
+    const authData = localStorage.getItem("authData");
+    
+    if (authData === null) {
+      console.error("Authentication data is missing from localStorage.");
+      return;
+    }
+    
+   
+
+    const { username } = JSON.parse(authData) as IAuthData;
+    const user = username ?? "Unknown User";
+    console.log(user)
+
     const data = {
       oltIp: this.selectedOltIp,
-      oltPon: onu.gpon,
+      oltPon: onu.gpon, // Using the PON value from the selected ONU
       onuVlan: this.selectedPonVlan,
       onuSerial: onu.onuMac,
       onuAlias: onu.onuAlias,
+      user: user, // Use the default value for user if username is null
     };
+    
+    this.showModal = false; // Close the ONU registration modal
+    this.notificar(
+      TipoNotificacao.ATENCAO,
+      "EXCELENTE!",
+      `O cliente ${onu.onuAlias} está sendo cadastrado. Aguarde alguns segundos!`
+    );
 
-    // Send the HTTP POST request using axios
     const response = await axios.post(
       "https://api.heatmap.conectnet.net/liberar-onu",
       data
     );
 
-    // Check if the HTTP request is successful (status code 200) and open the JSON modal with the response data
     if (response.status === 200) {
       this.openJsonModal(response.data);
+
+      // Armazena os dados da resposta em jsonData
+      this.jsonData = response.data;
     }
 
-    // Optional: You can show a success message or perform any other action after successful registration.
     console.log("ONU registered successfully:", data);
 
-    // Close the modal after successful registration.
     this.showModal = false;
   } catch (error) {
     console.error("Error registering ONU:", error);
-    // Handle error cases here if needed.
   }
 },
+  },
+  setup() {
+    const store = useStore();
+    const { notificar } = useNotificador();
+    return {
+      store,
+      notificar,
+    };
   },
 });
 </script>
@@ -234,23 +302,25 @@ export default defineComponent({
   background-color: aliceblue;
 }
 
-.teste-asul {
-  color: aliceblue;
-  background-color: black;
-}
+
 .custom-text-color {
   color: black;
 }
 
 .custom-terminal-background {
-  background-color: black;
+  background-color: aliceblue;
 }
+
 .search-container {
   padding: 1.5rem 0;
 }
-
+.button{
+  background-color: rgb(34, 130, 214);
+  padding: 1.50rem;
+  color: aliceblue;
+}
 .label {
-  color: #e96d13;
+  color: rgb(34, 130, 214);
   font-weight: bold;
 }
 
@@ -260,28 +330,21 @@ export default defineComponent({
   padding: 1.25rem;
 }
 
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.5); /* Add transparency to the background */
-}
 
 .modal.is-active {
-  display: flex !important; /* Force the modal to be visible */
+  display: flex !important;
+  /* Force the modal to be visible */
 }
 
 .modal-card {
   background-color: white;
   border-radius: 5px;
-  max-width: 80%; /* Adjust the width as needed */
-  max-height: 80%; /* Adjust the height as needed */
-  overflow-y: auto; /* Add scroll if the modal content exceeds the height */
+  max-width: 80%;
+  /* Adjust the width as needed */
+  max-height: 80%;
+  /* Adjust the height as needed */
+  overflow-y: auto;
+  /* Add scroll if the modal content exceeds the height */
 }
 
 .modal-card-title {
@@ -307,7 +370,8 @@ export default defineComponent({
 }
 
 .modal.is-active .modal-background {
-  display: block !important; /* Force the background to be visible */
+  display: block !important;
+  /* Force the background to be visible */
 }
 
 .table {

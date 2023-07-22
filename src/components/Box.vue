@@ -1,5 +1,5 @@
 <template>
-    <div class="box has-text-weight-bold" :style="estilos">
+    <div class="box has-text-weight-bold" >
       <slot></slot>
     </div>
   </template>
@@ -12,7 +12,7 @@
     data() {
       return {
         estilos: {
-          backgroundColor: "#faf0ca"
+          backgroundColor: "background:  darkblue"
         }
       };
     }
@@ -20,6 +20,9 @@
   </script>
 
   <style scoped>
+  .box{
+    background-color: aliceblue;
+  }
 
    </style>
   

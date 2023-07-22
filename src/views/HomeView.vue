@@ -57,7 +57,7 @@ main {
 }
 
 main.modo-escuro {
-  --bg-primario: #496678;
+  --bg-primario:  rgb(12, 1, 73);
   --texto-primario: #ddd;
 }
 

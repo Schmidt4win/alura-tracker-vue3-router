@@ -1,14 +1,14 @@
 <template>
   <header>
-    <h1>
-      <img src="../assets/logo.jpg" alt="">
-    </h1>
+    <div>
+      <img class="logo-container" src="../assets/logo.jpg" alt="">
+    </div>
     <button class="button" :class="{ 'is-dark': modoEscuroAtivo }" @click="alterarTema">
       {{ textoBotao }}
     </button>
     <nav class="panel mt-5">
       <ul>
-        <li>
+        <!-- <li>
           <RouterLink to="/tarefas" class="link">
             <i class="fas fa-tasks"></i> Tarefas
           </RouterLink>
@@ -27,13 +27,13 @@
           <RouterLink to="/cliente" class="link">
             <i class="fas fa-users"></i> Cliente
           </RouterLink>
-        </li>
+        </li> -->
         <li>
           <RouterLink to="/ramal" class="link">
-            <i class="fas fa-users"></i> Ramal
+            <i class="fas fa-users"></i> Liberar Clientes
           </RouterLink>
         </li>
-        <li>
+        <!-- <li>
           <RouterLink to="/talao" class="link">
             <i class="fas fa-pen"></i> Cadastro de Talao
           </RouterLink>
@@ -42,7 +42,7 @@
           <RouterLink to="/talaolista" class="link">
             <i class="fas fa-pen"></i> Lista De Talões
           </RouterLink>
-        </li>
+        </li> -->
         
       </ul>
       
@@ -61,7 +61,7 @@ export default defineComponent({
   emits: ['aoTemaAlterado'],
   data () {
     return {
-      modoEscuroAtivo: false
+      modoEscuroAtivo: true
     }
   },
   computed: {
@@ -90,7 +90,7 @@ export default defineComponent({
 <style scoped>
 header {
   padding: 1rem;
-  background: #496678;
+  background: #ff811a;
   width: 100%;
   height: 100vh;
   text-align: center;
@@ -98,7 +98,7 @@ header {
 
 header {
   padding: 1rem;
-  background: #496678;
+  background:  rgb(12, 1, 73);
   text-align: center;
 }
 
@@ -114,8 +114,7 @@ header {
   header {
     padding: 1rem;
   }
-
-  .button {
+   .button {
     font-size: 0.8rem;
   }
 
@@ -138,7 +137,15 @@ header {
   margin-top: 1rem;
 }
 
-
+.logo-container {
+   
+   margin-bottom: 1.5rem;
+   padding: 1.50rem;
+   border-radius: 50%;
+   max-width: 300px;
+   max-height: 300px;
+   background-color: aliceblue;
+   }
 .social-buttons {
   display: flex;
   justify-content: center;
