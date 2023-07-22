@@ -27,8 +27,8 @@ const rotas: RouteRecordRaw[] = [
       [
         {
           path: "/",
-          name: "Cliente",
-          component: Cliente,
+          name: "Liberar",
+          component: Ramal,
         },
       {
         path: "/cliente",
