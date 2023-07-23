@@ -65,7 +65,7 @@
             </thead>
             <tbody>
               <tr v-for="onu in onus" :key="onu.onuMac" class="onu-item">
-                <td class="td">{{ onu.onuMac }}</td>
+                <td class="td">{{ onu.onuMac.toLocaleUpperCase() }}</td>
                 <td>{{ onu.gpon }}</td>
                 <td>{{ onu.onuModel }}</td>
                 <td>
@@ -105,7 +105,7 @@
             </thead>
             <tbody>
               <tr v-for="onu in onus" :key="onu.onuMac" class="onu-item">
-                <td class="td">{{ onu.onuMac }}</td>
+                <td class="td">{{ onu.onuMac.toLocaleUpperCase() }}</td>
                 <td>{{ onu.gpon }}</td>
                 <td>{{ onu.onuModel }}</td>
               </tr>
@@ -129,9 +129,9 @@
         </header>
         <section class="modal-card-body custom-terminal-background custom-text-color">
           <div v-for="data in formattedJsonData" :key="data.clienteOnu">
-            <p><strong>Nome:</strong> {{ data.onuAlias }}</p>
-            <p><strong>Mac:</strong> {{ data.mac }}</p>
-            <p><strong>Status:</strong> Online</p>
+            <p><strong>Nome:</strong> {{ data.onuAlias.toLocaleUpperCase() }}</p>
+            <p><strong>Mac:</strong> {{ data.mac.toLocaleUpperCase() }}</p>
+            <p><strong>Status:</strong> {{ data.status }}</p>
             <p><strong>Rx:</strong> {{ data.tx }}</p>
             <p><strong>Tx:</strong> {{ data.rx }}</p>
           </div>
@@ -141,6 +141,12 @@
             Fechar
           </button>
         </footer>
+      </div>
+    </div>
+    <div class="modal is-active" v-if="loading">
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <progress class="progress is-info is-primary" max="100"></progress>
       </div>
     </div>
   </div>
@@ -178,6 +184,7 @@ export default defineComponent({
       selectedOltName: "",
       showSelectedOltModal: false,
       selectedRamal: null as IRamal | null,
+      loading: false,
     };
   },
   beforeMount() {
@@ -285,6 +292,7 @@ export default defineComponent({
               }
             );
             const data = await response.json();
+            console.log(data)
             this.onus = data.map((onu: IOnu) => ({
               ...onu,
               onuAlias: "",
@@ -313,6 +321,10 @@ export default defineComponent({
 
       this.selectedOltIp = this.selectedOltName;
     },
+    closeModal() {
+      this.showModal = false;
+    },
+  
     closeSelectedOltModal() {
       this.showSelectedOltModal = false;
     },
@@ -336,6 +348,7 @@ export default defineComponent({
           }
         );
         const data = await response.json();
+        console.log(data)
         this.onus = data.map((onu: IOnu) => ({
           ...onu,
           onuAlias: "",
@@ -369,7 +382,7 @@ export default defineComponent({
           oltPon: onu.gpon,
           onuVlan: this.selectedPonVlan,
           onuSerial: onu.onuMac,
-          onuAlias: onu.onuAlias,
+          onuAlias: onu.onuAlias.toLocaleUpperCase(),
           user: user,
         };
 
@@ -379,6 +392,7 @@ export default defineComponent({
           "EXCELENTE!",
           `O cliente ${onu.onuAlias} está sendo cadastrado. Aguarde alguns segundos!`
         );
+        this.loading = true;
 
         const response = await axios.post(
           "https://api.heatmap.conectnet.net/liberar-onu",
@@ -386,6 +400,7 @@ export default defineComponent({
         );
 
         if (response.status === 200) {
+          this.loading = false;
           this.openJsonModal(response.data);
 
           // Armazena os dados da resposta em jsonData
@@ -411,6 +426,7 @@ export default defineComponent({
 });
 </script>
 <style scoped>
+
 .custom-background {
   background-color: aliceblue;
 }

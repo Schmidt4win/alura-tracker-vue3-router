@@ -26,6 +26,10 @@
       </div>
     </div>
   </div>
+  <!-- Notification to display error message -->
+  <div class="notification" :class="{ 'show-notification': errorMessage }">
+    {{ errorMessage }}
+  </div>
 </template>
 
 <script lang="ts">
@@ -39,6 +43,7 @@ export default defineComponent({
       name: '',
       password: '',
       category: '',
+      errorMessage: '', // Added a data property for the error message
     };
   },
   methods: {
@@ -61,20 +66,25 @@ export default defineComponent({
             username: username,
             expiration: expiration,
           };
-          console.log(username)
           localStorage.setItem('authData', JSON.stringify(authData));
 
-          // Redirect to home route
+          // Redirect to the home route
           this.$router.push('/');
         }
       } catch (error) {
         console.error(error);
+        this.showErrorMessage('Usuario ou Senha invalidos, tente novamente');
       }
+    },
+    showErrorMessage(message: string) {
+      this.errorMessage = message;
+      setTimeout(() => {
+        this.errorMessage = '';
+      }, 3000); // Hide the error message after 3 seconds
     },
   },
 });
 </script>
-
 <style scoped>
 .login-container {
   display: flex;
@@ -127,6 +137,30 @@ export default defineComponent({
 
 .input:focus {
   box-shadow: 0 0 0 0.125em #496678;
+}
+
+.notification {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  background-color: #e96d13;
+  color: aliceblue;
+  padding: 1rem 2rem;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+.show-notification {
+  opacity: 1;
+  visibility: visible;
 }
 </style>
 

@@ -5,10 +5,11 @@ import Projetos from "../views/Projetos.vue";
 import HomeView from "../views/HomeView.vue"
 import ServiceForm from "../views/ServiceForm.vue";
 import Login from "../views/Login.vue";
-import Cliente from "../components/Cliente.vue";
+import OnuList from "../components/OnuList.vue";
 import Ramal from "../components/Ramal.vue";
 import TalaoForm from "@/views/TalaoForm.vue"
 import TalaoLista from "@/components/TalaoLista.vue"
+import PonSignal from "@/components/PonSignal.vue"
 
 
 
@@ -22,7 +23,7 @@ const rotas: RouteRecordRaw[] = [
     path: "/",
     name: "Home",
     component: HomeView,
-    redirect: '/cliente',
+    redirect: '/ramal',
     children:
       [
         {
@@ -31,14 +32,14 @@ const rotas: RouteRecordRaw[] = [
           component: Ramal,
         },
       {
-        path: "/cliente",
-        name: "Cliente",
-        component: Cliente,
+        path: "/onulist",
+        name: "OnuList",
+        component: OnuList,
       },
       {
-        path: "/serviço",
-        name: "Serviço",
-        component: ServiceForm,
+        path: "/ponsignal",
+        name: "Sinal do ramal",
+        component: PonSignal,
       },
       {
         path: "/tarefas",

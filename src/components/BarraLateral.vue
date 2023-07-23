@@ -17,17 +17,17 @@
           <RouterLink to="/projetos" class="link">
             <i class="fas fa-project-diagram"></i> Projetos
           </RouterLink>
-        </li>
+        </li> -->
         <li>
-          <RouterLink to="/serviço" class="link">
-            <i class="fas fa-pen"></i> Cadastro de Serviço
+          <RouterLink to="/ponsignal" class="link">
+            <i class="fa-solid fa-signal"></i> Sinal Da Pon
           </RouterLink>
         </li>
          <li>
-          <RouterLink to="/cliente" class="link">
-            <i class="fas fa-users"></i> Cliente
+          <RouterLink to="/onulist" class="link">
+            <i class="fa-solid fa-gear"></i> Verificar Clientes
           </RouterLink>
-        </li> -->
+        </li>
         <li>
           <RouterLink to="/ramal" class="link">
             <i class="fas fa-users"></i> Liberar Clientes
