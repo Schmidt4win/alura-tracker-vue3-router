@@ -13,4 +13,8 @@ export default interface IOnuDataResponse {
   'Firmware Version': string;
   'Last Update': string;
   IPHOST: string;
+  oltIp: string;
+  name: string
+  mac: string;
+  flowProfile: string;
 }

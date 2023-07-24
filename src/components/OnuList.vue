@@ -5,16 +5,20 @@
     </div>
 
     <div class="client-container">
-      <Box v-for="cliente in filteredClientes" :key="cliente._id">
+      <Box class="box-container" v-for="cliente in filteredOnuClient" :key="cliente.name">
+        <!-- Use cliente.mac as the key -->
         <div class="columns">
           <div class="column">
-            <strong class="label">cliente:</strong> {{ cliente.onuAlias }}
+            <strong class="label">cliente:</strong> {{ cliente.name }}
+            <!-- Use cliente.name instead of cliente.Alias -->
           </div>
           <div class="column">
-            <strong class="label">Mac:</strong> {{ cliente.onuSerial.toLocaleUpperCase() }}
+            <strong class="label">Mac:</strong> {{ cliente.mac }}
+            <!-- Use cliente.mac instead of cliente.Serial -->
           </div>
           <div class="column">
-            <strong class="label">VLAN:</strong> {{ cliente.onuVlan }}
+            <strong class="label">VLAN:</strong> {{ cliente.flowProfile }}
+            <!-- Use cliente.flowProfile instead of cliente.Interface -->
           </div>
           <div class="column">
             <button class="button" @click="verificarOnu(cliente)">
@@ -45,7 +49,7 @@
             </thead>
             <tbody>
               <tr v-for="onu in onus" :key="onu.onuMac" class="onu-item">
-                <td class="td">{{ onu.onuMac.toLocaleUpperCase() }}</td>
+                <td class="td">{{ onu.onuMac }}</td>
                 <td>{{ onu.gpon }}</td>
                 <td>{{ onu.onuModel }}</td>
               </tr>
@@ -67,29 +71,38 @@
         </header>
         <section class="modal-card-body custom-terminal-background custom-text-color">
           <div v-if="jsonData.Alias">
-            <Box> Dados Basicos:
+            <Box class="box-container">
+              Dados Basicos:
               <p><strong>Nome:</strong> {{ jsonData.Alias }}</p>
               <p><strong>Status:</strong> {{ jsonData.Status }}</p>
-              <p><strong>Rx:</strong> {{ jsonData['Power Level'] }}</p>
+              <p><strong>Rx:</strong> {{ jsonData["Power Level"] }}</p>
               <p><strong>Tx:</strong> {{ jsonData.RSSI }}</p>
             </Box>
-            <Box>Dados de Diagnostico:
+            <Box class="box-container">Dados de Diagnostico:
               <p><strong>Mac:</strong> {{ jsonData.Serial }}</p>
               <p><strong>Model:</strong> {{ jsonData.Model }}</p>
               <p><strong>Distance:</strong> {{ jsonData.Distance }}</p>
-              <p><strong>Firmware:</strong> {{ jsonData['Firmware Version'] }}</p>
-              <p><strong>Last Update:</strong> {{ jsonData['Last Update'] }}</p>
+              <p>
+                <strong>Firmware:</strong> {{ jsonData["Firmware Version"] }}
+              </p>
+              <p><strong>Last Update:</strong> {{ jsonData["Last Update"] }}</p>
             </Box>
-
-
           </div>
           <div v-else>
             <p>No data available for this ONU.</p>
           </div>
         </section>
         <footer class="modal-card-foot custom-background">
-          <button class="button is-primary" @click="closeJsonModal">Fechar</button>
+          <button class="button is-primary" @click="closeJsonModal">
+            Fechar
+          </button>
         </footer>
+      </div>
+    </div>
+    <div class="modal color-progress is-active" v-if="loading">
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <progress class="progress is-info is-primary" max="100"></progress>
       </div>
     </div>
   </div>
@@ -101,7 +114,6 @@ import axios from "axios";
 import Icliente from "../interfaces/ICliente";
 import IOnu from "../interfaces/IOnu";
 import IOnuDataResponse from "../interfaces/IOnuDataResponse";
-import IOnuCliente from "../interfaces/IOnuCliente";
 
 import Box from "./Box.vue";
 import { TipoNotificacao } from "@/interfaces/INotificação";
@@ -115,7 +127,7 @@ export default defineComponent({
   },
   data() {
     return {
-      onuClient: [] as IOnuCliente[],
+      onuClient: [] as IOnuDataResponse[],
       activeDropdown: null as string | null,
       searchQuery: "",
       showModal: false,
@@ -127,48 +139,29 @@ export default defineComponent({
       selectedOnuName: "",
       showSelectedOnuModal: false,
       selectedcliente: null as Icliente | null,
+      loading: false
     };
   },
   beforeMount() {
     this.fetchOnuData();
   },
-  created() {
-    this.fetchOnuData();
-  },
+
+
   computed: {
-    filteredClientes(): IOnuCliente[] {
-      if (!this.searchQuery) {
-        if (this.onuName) {
-          // Change the condition to check for onuName
-          return this.onuClient.filter(
-            (cliente: IOnuCliente) => cliente.onuAlias === this.onuName
-          );
-        }
-        return this.onuClient;
-      } else {
-        const query = this.searchQuery.toLowerCase();
-        return this.onuClient.filter((cliente: IOnuCliente) => {
-          const {
-            onuAlias,
-            oltIp,
-            oltPon,
-            onuVlan,
-            user,
-            onuSerial,
-            date_time,
-          } = cliente;
-          return (
-            onuAlias.toLowerCase().includes(query) ||
-            oltIp.toLowerCase().includes(query) ||
-            oltPon.toLowerCase().includes(query) ||
-            onuSerial.toLowerCase().includes(query) ||
-            date_time.toLowerCase().includes(query) ||
-            onuVlan.toLowerCase().includes(query) ||
-            user.toLowerCase().includes(query)
-          );
-        });
-      }
+    filteredOnuClient(): IOnuDataResponse[] {
+      const query = this.searchQuery.toLowerCase();
+      return this.onuClient.filter((cliente) => {
+        const name = cliente.name ? cliente.name.toLowerCase() : '';
+        // const mac = cliente.mac ? cliente.mac.toLowerCase() : '';
+        // const flowProfile = cliente.flowProfile ? cliente.flowProfile.toLowerCase() : '';
+        return (
+          name.startsWith(query)
+          // mac.includes(query) ||
+          // flowProfile.includes(query)
+        );
+      });
     },
+
     formattedJsonData(): Array<{
       onuAlias: string;
       mac: string;
@@ -188,9 +181,10 @@ export default defineComponent({
       for (const clienteOnu in jsonData) {
         const data = jsonData[clienteOnu];
 
+        // Check if the onuMac property exists before using it
         const formattedItem = {
           onuAlias: data.Alias ? data.Alias : "N/A",
-          mac: clienteOnu,
+          mac: data.Serial ? data.Serial : "N/A",
           status: data.Status ? data.Status : "N/A",
           rx: data["Power Level"] ? data["Power Level"] : "N/A",
           tx: data.RSSI ? data.RSSI : "N/A",
@@ -201,16 +195,16 @@ export default defineComponent({
 
       return formattedData;
     },
-
   },
   methods: {
-    async verificarOnu(cliente: IOnuCliente) {
+    async verificarOnu(cliente: IOnuDataResponse) {
       try {
+        console.log(cliente);
         const response = await axios.post(
           "https://api.heatmap.conectnet.net/verificar-onu-completo",
           {
             oltIp: cliente.oltIp,
-            onuAlias: cliente.onuAlias,
+            onuAlias: cliente.name,
           }
         );
 
@@ -229,19 +223,55 @@ export default defineComponent({
         console.error("Error verifying ONU:", error);
       }
     },
+
     async fetchOnuData() {
       try {
-        const response = await fetch(
-          "https://api.heatmap.conectnet.net/onuget"
+        this.loading = true;
+        this.notificar(
+          TipoNotificacao.ATENCAO,
+          "EXCELENTE!",
+          `Os Clientes estão sendos aferidos. Aguarde alguns segundos!`
         );
-        const data = await response.json();
-        this.onuClient = data;
+        const apiCalls = [];
+        const baseIp = "192.168.";
+        const startRange = 202;
+        const endRange = 209;
+
+        for (let i = startRange; i <= endRange; i++) {
+          const oltIp = baseIp + i + ".2";
+          apiCalls.push(
+            axios.post(
+              "https://api.heatmap.conectnet.net/verificar-onu-name-olt",
+              { oltIp }
+            )
+          );
+        }
+
+        // Wait for all the API calls to complete
+        const responses = await axios.all(apiCalls);
+
+        // Extract the data from each response and combine them into a single array
+        const combinedOnuClient: IOnuDataResponse[] = []; // Explicitly type the combinedOnuClient
+
+        responses.forEach((response) => {
+          const responseData = Array.isArray(response.data)
+            ? response.data // If the data is an array, use it directly
+            : Array.isArray(response.data.data)
+              ? response.data.data // If the data is nested under "data" property, use it
+              : [];
+
+          // Combine the client data into the combinedOnuClient array
+          combinedOnuClient.push(...responseData);
+        });
+
+
+        // Set the onuClient data to the combined result
+        this.onuClient = combinedOnuClient;
+        this.loading = false
       } catch (error) {
-        console.error("Error fetching cliente data:", error);
+        console.error("Error verifying ONU:", error);
       }
     },
-
-
     closeModal() {
       this.showModal = false;
     },
@@ -271,6 +301,9 @@ export default defineComponent({
 .custom-background {
   background-color: aliceblue;
 }
+.box-container {
+  border: 1px solid #e96d13;
+}
 
 .custom-text-color {
   color: black;
@@ -298,7 +331,7 @@ export default defineComponent({
 }
 
 .client-container {
-  max-height: calc(100vh - 165px);
+  max-height: calc(100vh - 100px);
   overflow-y: auto;
   padding: 1.25rem;
 }
