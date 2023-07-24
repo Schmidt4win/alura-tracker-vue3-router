@@ -172,6 +172,11 @@ import Box from "./Box.vue";
 import { TipoNotificacao } from "@/interfaces/INotificação";
 import useNotificador from "@/hooks/notificador";
 import { useStore } from "@/store";
+interface IOnuNameData {
+    mac: string;
+    name: string;
+}
+
 
 export default defineComponent({
     name: "PonSignal",
@@ -189,12 +194,12 @@ export default defineComponent({
             selectedPonVlan: "",
             showJsonModal: false,
             jsonData: {} as Record<string, {
-                mac: string;
-                Status: string;
-                "Power Level": string;
-                RSSI: string;
-                name: string; // Add the 'name' field to the type
-            }>,
+            mac: string;
+            Status: string;
+            "Power Level": string;
+            RSSI: string;
+            name: string; // Add the 'name' field to the type
+        }>,
             selectedOltName: "",
             showSelectedOltModal: false,
             selectedRamal: null as IRamal | null,
@@ -381,25 +386,24 @@ export default defineComponent({
                 
                 // Store the ONU data in the component data
                 this.onuData = onuDataResponse.data;
+                const onuNameData: IOnuNameData[] = onuNameResponse.data;
 
-                // Combine the ONU name data with the ONU data using the MAC address as the key
-                const correlatedData = {};
-                for (const mac in onuDataResponse.data) {
-                    const onuData = onuDataResponse.data[mac];
-                    const onuNameData = onuNameResponse.data.find(
-                        (item) => item.mac === mac
-                    );
+// Combine the ONU name data with the ONU data using the MAC address as the key
+const correlatedData: Record<string, IOnuData & { name: string }> = {};
+for (const mac in onuDataResponse.data) {
+  const onuData = onuDataResponse.data[mac];
+  const onuNameDataItem = onuNameData.find((item) => item.mac === mac);
 
-                    if (onuNameData) {
-                        correlatedData[mac] = {
-                            ...onuData,
-                            name: onuNameData.name, // Add the 'name' field to the object
-                        };
-                    }
-                }
+  if (onuNameDataItem) {
+    correlatedData[mac] = {
+      ...onuData,
+      name: onuNameDataItem.name, // Add the 'name' field to the object
+    };
+  }
+}
 
-                // Set the correlated data as the final ONU data
-                this.onuData = correlatedData;
+// Set the correlated data as the final ONU data
+this.onuData = correlatedData
 
                 // Store the selected OLT IP and PON for the table header
                 this.selectedOltIp = ramal.oltIp;
