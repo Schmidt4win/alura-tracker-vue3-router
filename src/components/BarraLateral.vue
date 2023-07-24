@@ -19,18 +19,23 @@
           </RouterLink>
         </li> -->
         <li>
+          <RouterLink to="/pononu" class="link">
+            <i class="fas fa-users"></i> Clientes por OLT e PON
+          </RouterLink>
+        </li>
+        <li>
           <RouterLink to="/ponsignal" class="link">
             <i class="fa-solid fa-signal"></i> Sinal Da Pon
           </RouterLink>
         </li>
          <li>
           <RouterLink to="/onulist" class="link">
-            <i class="fa-solid fa-gear"></i> Verificar Clientes
+            <i class="fas fa-users"></i> Verificar Clientes
           </RouterLink>
         </li>
         <li>
           <RouterLink to="/ramal" class="link">
-            <i class="fas fa-users"></i> Liberar Clientes
+            <i class="fa-solid fa-gear"></i> Liberar Clientes
           </RouterLink>
         </li>
         <!-- <li>

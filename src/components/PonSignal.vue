@@ -113,7 +113,7 @@
             </div>
         </div>
 
-      
+
     </div>
     <div class="modal is-active" v-if="showOnuDataModal">
         <div class="modal-background"></div>
@@ -142,7 +142,7 @@
                             <td>{{ data.Status }}</td>
                             <td>{{ data['Power Level'] }}</td>
                             <td>{{ data.RSSI }}</td>
-                             
+
                         </tr>
                     </tbody>
                 </table>
@@ -194,12 +194,12 @@ export default defineComponent({
             selectedPonVlan: "",
             showJsonModal: false,
             jsonData: {} as Record<string, {
-            mac: string;
-            Status: string;
-            "Power Level": string;
-            RSSI: string;
-            name: string; // Add the 'name' field to the type
-        }>,
+                mac: string;
+                Status: string;
+                "Power Level": string;
+                RSSI: string;
+                name: string; // Add the 'name' field to the type
+            }>,
             selectedOltName: "",
             showSelectedOltModal: false,
             selectedRamal: null as IRamal | null,
@@ -357,14 +357,14 @@ export default defineComponent({
             this.showJsonModal = false;
         },
         async openModal(ramal: IRamal) {
-           
+
             try {
                 this.loading = true;
                 this.notificar(
-                  TipoNotificacao.ATENCAO,
-           "EXCELENTE!",
-          `O Ramal está sendo consultado. Aguarde alguns segundos!`
-        );
+                    TipoNotificacao.ATENCAO,
+                    "EXCELENTE!",
+                    `O Ramal está sendo consultado. Aguarde alguns segundos!`
+                );
 
                 // First API response - ONU data
                 const onuDataResponse = await axios.post(
@@ -383,27 +383,27 @@ export default defineComponent({
                         oltPon: ramal.oltPon,
                     }
                 );
-                
+
                 // Store the ONU data in the component data
                 this.onuData = onuDataResponse.data;
                 const onuNameData: IOnuNameData[] = onuNameResponse.data;
 
-// Combine the ONU name data with the ONU data using the MAC address as the key
-const correlatedData: Record<string, IOnuData & { name: string }> = {};
-for (const mac in onuDataResponse.data) {
-  const onuData = onuDataResponse.data[mac];
-  const onuNameDataItem = onuNameData.find((item) => item.mac === mac);
+                // Combine the ONU name data with the ONU data using the MAC address as the key
+                const correlatedData: Record<string, IOnuData & { name: string }> = {};
+                for (const mac in onuDataResponse.data) {
+                    const onuData = onuDataResponse.data[mac];
+                    const onuNameDataItem = onuNameData.find((item) => item.mac === mac);
 
-  if (onuNameDataItem) {
-    correlatedData[mac] = {
-      ...onuData,
-      name: onuNameDataItem.name, // Add the 'name' field to the object
-    };
-  }
-}
+                    if (onuNameDataItem) {
+                        correlatedData[mac] = {
+                            ...onuData,
+                            name: onuNameDataItem.name, // Add the 'name' field to the object
+                        };
+                    }
+                }
 
-// Set the correlated data as the final ONU data
-this.onuData = correlatedData
+                // Set the correlated data as the final ONU data
+                this.onuData = correlatedData
 
                 // Store the selected OLT IP and PON for the table header
                 this.selectedOltIp = ramal.oltIp;
