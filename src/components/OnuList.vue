@@ -1,12 +1,7 @@
 <template>
   <div class="max-container">
     <div class="search-container">
-      <input
-        class="input"
-        type="text"
-        v-model="searchQuery"
-        placeholder="PESQUISE POR CLIENTE"
-      />
+      <input class="input" type="text" v-model="searchQuery" placeholder="PESQUISE POR CLIENTE" />
     </div>
 
     <div class="client-container">
@@ -37,15 +32,9 @@
           <p class="modal-card-title custom-text-color">
             ONUs da OLT: {{ selectedOnuName }}
           </p>
-          <button
-            class="delete"
-            aria-label="close"
-            @click="closeSelectedOnuModal"
-          ></button>
+          <button class="delete" aria-label="close" @click="closeSelectedOnuModal"></button>
         </header>
-        <section
-          class="modal-card-body custom-terminal-background custom-text-color"
-        >
+        <section class="modal-card-body custom-terminal-background custom-text-color">
           <table class="table is-fullwidth is-bordered is-striped is-narrow">
             <thead>
               <tr>
@@ -73,29 +62,33 @@
       <div class="modal-background"></div>
       <div class="modal-card json-modal-card">
         <header class="modal-card-head custom-background">
-          <p class="modal-card-title custom-text-color">
-            SINAL DO CLIENTE
-          </p>
-          <button
-            class="delete"
-            aria-label="close"
-            @click="closeJsonModal"
-          ></button>
+          <p class="modal-card-title custom-text-color">SINAL DO CLIENTE</p>
+          <button class="delete" aria-label="close" @click="closeJsonModal"></button>
         </header>
-        <section
-          class="modal-card-body custom-terminal-background custom-text-color"
-        >
-          <div v-for="data in formattedJsonData" :key="data.clienteOnu">
-            <p><strong>Nome:</strong> {{ data.mac.toLocaleUpperCase() }}</p>
-            <p><strong>Status:</strong> {{ data.status }}</p>
-            <p><strong>Rx:</strong> {{ data.rx }}</p>
-            <p><strong>Tx:</strong> {{ data.tx }}</p>
+        <section class="modal-card-body custom-terminal-background custom-text-color">
+          <div v-if="jsonData.Alias">
+            <Box> Dados Basicos:
+              <p><strong>Nome:</strong> {{ jsonData.Alias }}</p>
+              <p><strong>Status:</strong> {{ jsonData.Status }}</p>
+              <p><strong>Rx:</strong> {{ jsonData['Power Level'] }}</p>
+              <p><strong>Tx:</strong> {{ jsonData.RSSI }}</p>
+            </Box>
+            <Box>Dados de Diagnostico:
+              <p><strong>Mac:</strong> {{ jsonData.Serial }}</p>
+              <p><strong>Model:</strong> {{ jsonData.Model }}</p>
+              <p><strong>Distance:</strong> {{ jsonData.Distance }}</p>
+              <p><strong>Firmware:</strong> {{ jsonData['Firmware Version'] }}</p>
+              <p><strong>Last Update:</strong> {{ jsonData['Last Update'] }}</p>
+            </Box>
+
+
+          </div>
+          <div v-else>
+            <p>No data available for this ONU.</p>
           </div>
         </section>
         <footer class="modal-card-foot custom-background">
-          <button class="button is-primary" @click="closeJsonModal">
-            Fechar
-          </button>
+          <button class="button is-primary" @click="closeJsonModal">Fechar</button>
         </footer>
       </div>
     </div>
@@ -107,9 +100,9 @@ import { defineComponent } from "vue";
 import axios from "axios";
 import Icliente from "../interfaces/ICliente";
 import IOnu from "../interfaces/IOnu";
-import IOnuData from "../interfaces/IOnuData";
+import IOnuDataResponse from "../interfaces/IOnuDataResponse";
 import IOnuCliente from "../interfaces/IOnuCliente";
-import IAuthData from "../interfaces/IAuthData";
+
 import Box from "./Box.vue";
 import { TipoNotificacao } from "@/interfaces/INotificação";
 import useNotificador from "@/hooks/notificador";
@@ -130,7 +123,7 @@ export default defineComponent({
       onuName: "",
       selectedPonVlan: "",
       showJsonModal: false,
-      jsonData: {} as Record<string, IOnuData>,
+      jsonData: {} as Record<string, IOnuDataResponse>,
       selectedOnuName: "",
       showSelectedOnuModal: false,
       selectedcliente: null as Icliente | null,
@@ -177,7 +170,6 @@ export default defineComponent({
       }
     },
     formattedJsonData(): Array<{
-      clienteOnu: string;
       onuAlias: string;
       mac: string;
       status: string;
@@ -186,27 +178,22 @@ export default defineComponent({
     }> {
       const jsonData = this.jsonData;
       const formattedData: Array<{
-        clienteOnu: string;
         onuAlias: string;
         mac: string;
         status: string;
-         rx: string;
-         tx: string;
+        rx: string;
+        tx: string;
       }> = [];
 
       for (const clienteOnu in jsonData) {
         const data = jsonData[clienteOnu];
 
-        // Check if an onu exists in the onus array with the matching onuMac
-        const onu = this.onus.find((onu) => onu.onuMac === clienteOnu);
-
         const formattedItem = {
-          clienteOnu: clienteOnu,
-          onuAlias: onu ? onu.onuAlias : "N/A",
+          onuAlias: data.Alias ? data.Alias : "N/A",
           mac: clienteOnu,
-          status: data["Status"] ? data["Status"] : "N/A",
+          status: data.Status ? data.Status : "N/A",
           rx: data["Power Level"] ? data["Power Level"] : "N/A",
-          tx: data["RSSI"] ? data["RSSI"] : "N/A",
+          tx: data.RSSI ? data.RSSI : "N/A",
         };
 
         formattedData.push(formattedItem);
@@ -215,20 +202,12 @@ export default defineComponent({
       return formattedData;
     },
 
-    uniqueOltNames(): string[] {
-      // Get unique OLT names from onuClient
-      return [
-        ...new Set(
-          this.onuClient.map((cliente: IOnuCliente) => cliente.onuAlias)
-        ),
-      ];
-    },
   },
   methods: {
     async verificarOnu(cliente: IOnuCliente) {
       try {
         const response = await axios.post(
-          "https://api.heatmap.conectnet.net/verificar-onu",
+          "https://api.heatmap.conectnet.net/verificar-onu-completo",
           {
             oltIp: cliente.oltIp,
             onuAlias: cliente.onuAlias,
@@ -237,12 +216,9 @@ export default defineComponent({
 
         // The response data should be an object containing the ONU data
         const responseData = response.data;
-        const onuData: IOnuData = responseData[cliente.onuAlias];
 
         // Set the jsonData to the onuData received from the server
-        this.jsonData = {
-          [cliente.onuAlias]: onuData,
-        };
+        this.jsonData = responseData;
 
         // Show the jsonmodal with the received data
         this.showJsonModal = true;
@@ -264,55 +240,8 @@ export default defineComponent({
         console.error("Error fetching cliente data:", error);
       }
     },
-    async openModalForSelectedOnu() {
-      // Check if a valid OLT is selected
-      if (this.onuName) {
-        // Find the selected OLT from onuClient
-        const selectedOnu = this.onuClient.find(
-          (cliente: IOnuCliente) => cliente.onuAlias === this.onuName
-        );
 
-        try {
-          if (selectedOnu) {
-            const response = await fetch(
-              "https://api.heatmap.conectnet.net/listar-onu",
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ oltIp: selectedOnu.onuAlias }), // Use selectedOnu.oltIp instead of cliente.oltIp
-              }
-            );
-            const data = await response.json();
-            this.onus = data.map((onu: IOnu) => ({
-              ...onu,
-              onuAlias: "",
-            }));
 
-            // Set the selectedOnuName to the selected OLT name
-            this.selectedOnuName = selectedOnu.onuAlias;
-
-            // Show the new modal for the selected OLT
-            this.showSelectedOnuModal = true;
-
-            // Close the other modal if it's open
-            this.showModal = false;
-          }
-        } catch (error) {
-          console.error("Error fetching ONU data:", error);
-        }
-      } else {
-        // No OLT is selected, show a notification or handle the case accordingly
-        console.warn("No OLT selected. Please select an OLT.");
-      }
-    },
-    closeModalAndRefresh() {
-      // Close the modal
-      this.showModal = false;
-
-      this.onuName = this.selectedOnuName;
-    },
     closeModal() {
       this.showModal = false;
     },

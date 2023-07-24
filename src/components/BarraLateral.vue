@@ -30,7 +30,7 @@
         </li>
          <li>
           <RouterLink to="/onulist" class="link">
-            <i class="fas fa-users"></i> Verificar Clientes
+            <i class="fa-solid fa-screwdriver-wrench"></i> Diagnostico Avançado
           </RouterLink>
         </li>
         <li>
