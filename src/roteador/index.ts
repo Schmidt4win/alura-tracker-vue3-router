@@ -11,6 +11,7 @@ import TalaoForm from "@/views/TalaoForm.vue"
 import TalaoLista from "@/components/TalaoLista.vue"
 import PonSignal from "@/components/PonSignal.vue"
 import PonOnu from "@/components/PonOnu.vue"
+import OnuLog from "@/components/OnuLog.vue"
 
 
 
@@ -48,27 +49,9 @@ const rotas: RouteRecordRaw[] = [
         component: PonOnu,
       },
       {
-        path: "/projetos",
-        name: "Projetos",
-        component: Projetos,
-        children: [
-          {
-            path: "",
-            name: "Projetos",
-            component: Lista
-          },
-          {
-            path: "novo",
-            name: "Novo Projeto",
-            component: Formulario,
-          },
-          {
-            path: ":id",
-            name: "Editar Projeto",
-            component: Formulario,
-            props: true
-          },
-        ]
+        path: "/onulog",
+        name: "Onu Log",
+        component: OnuLog,       
       },
       {
         path: "/ramal",

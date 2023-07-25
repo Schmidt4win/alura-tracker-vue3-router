@@ -120,7 +120,7 @@
         <div class="modal-card">
             <header class="modal-card-head custom-background">
                 <p class="modal-card-title custom-text-color">
-                    Sinais no Ramal: {{ selectedOltIp }} - {{ selectedOltPon }}
+                    Sinais no Ramal: 
                 </p>
                 <button class="delete" aria-label="close" @click="closeOnuDataModal"></button>
             </header>
@@ -138,7 +138,7 @@
                     <tbody>
                         <tr v-for="(data, mac) in onuData" :key="mac" class="onu-item">
                             <td>{{ data.name }}</td>
-                            <td class="td">{{ mac.toLocaleUpperCase() }}</td>
+                            <td>{{ mac.toLocaleUpperCase() }}</td>
                             <td>{{ data.Status }}</td>
                             <td>{{ data['Power Level'] }}</td>
                             <td>{{ data.RSSI }}</td>

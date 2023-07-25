@@ -38,6 +38,11 @@
             <i class="fa-solid fa-gear"></i> Liberar Clientes
           </RouterLink>
         </li>
+        <li>
+          <RouterLink to="/onulog" class="link">
+            <i class="fa-solid fa-list"></i> Logs de cadastro
+          </RouterLink>
+        </li>
         <!-- <li>
           <RouterLink to="/talao" class="link">
             <i class="fas fa-pen"></i> Cadastro de Talao

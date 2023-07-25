@@ -71,13 +71,13 @@
                 <td>{{ onu.gpon }}</td>
                 <td>{{ onu.onuModel }}</td>
                 <td>
-                  <input class="input" type="text" v-model="onu.onuAlias" placeholder="Nome do cliente" name="onuAlias" />
+                  <input class="input liberar" type="text" v-model="onu.onuAlias" placeholder="Nome do cliente" name="onuAlias" />
                 </td>
                 <td>
-                  <input class="input" type="text" v-model="onu.Cto" placeholder="Nome da CTO" name="Cto" />
+                  <input class="input liberar" type="text" v-model="onu.Cto" placeholder="Nome da CTO" name="Cto" />
                 </td>
                 <td>
-                  <input class="input" type="text" v-model="onu.Tecnico" placeholder="Nome do Técnico" name="Tecnico" />
+                  <input class="input liberar" type="text" v-model="onu.Tecnico" placeholder="Nome do Técnico" name="Tecnico" />
                 </td>
                 <td>
                   <button class="button is-primary" @click="registerOnu(onu)">
@@ -534,7 +534,7 @@ export default defineComponent({
   padding: 0.5rem;
   text-align: left;
 }
-.input{
+.liberar{
   width: 100px;
 }
 .table th {
