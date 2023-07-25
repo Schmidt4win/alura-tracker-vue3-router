@@ -7,4 +7,6 @@ export default interface IOnuClient {
     onuAlias: string;
     user: string;
     date_time: string;
+    cto: string
+    tecnico: string
   }

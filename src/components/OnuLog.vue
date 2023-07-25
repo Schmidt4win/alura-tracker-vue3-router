@@ -22,6 +22,12 @@
               <strong class="label">VLAN:</strong> {{ cliente.onuVlan }}
             </div>
             <div class="column">
+              <strong class="label">Cto:</strong> {{ cliente.cto }}
+            </div>
+            <div class="column">
+              <strong class="label">Instalador:</strong> {{ cliente.tecnico }}
+            </div>
+            <div class="column">
               <button class="button" @click="verificarOnu(cliente)">
                 Verificar ONU
               </button>
@@ -109,7 +115,6 @@
   import IOnu from "../interfaces/IOnu";
   import IOnuData from "../interfaces/IOnuData";
   import IOnuCliente from "../interfaces/IOnuCliente";
-  import IAuthData from "../interfaces/IAuthData";
   import Box from "./Box.vue";
   import { TipoNotificacao } from "@/interfaces/INotificação";
   import useNotificador from "@/hooks/notificador";
@@ -163,6 +168,8 @@
               user,
               onuSerial,
               date_time,
+              cto,
+              tecnico
             } = cliente;
             return (
               onuAlias.toLowerCase().includes(query) ||
@@ -171,6 +178,8 @@
               onuSerial.toLowerCase().includes(query) ||
               date_time.toLowerCase().includes(query) ||
               onuVlan.toLowerCase().includes(query) ||
+              cto.toLowerCase().includes(query) ||
+              tecnico.toLowerCase().includes(query) ||
               user.toLowerCase().includes(query)
             );
           });

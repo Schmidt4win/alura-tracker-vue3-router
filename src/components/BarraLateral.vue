@@ -25,7 +25,7 @@
         </li>
         <li>
           <RouterLink to="/ponsignal" class="link">
-            <i class="fa-solid fa-signal"></i> Sinal Da Pon
+            <i class="fa-solid fa-signal"></i> Sinal por Ramal
           </RouterLink>
         </li>
          <li>
