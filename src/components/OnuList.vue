@@ -149,16 +149,15 @@ export default defineComponent({
 
   computed: {
     filteredOnuClient(): IOnuDataResponse[] {
-      const query = this.searchQuery.toLowerCase();
+      const query = this.searchQuery.trim().toLowerCase();
+      if (!query) {
+        return this.onuClient; // Retorna todos os clientes se a query estiver vazia
+      }
+
+      const regex = new RegExp(`^${query}`, 'i');
       return this.onuClient.filter((cliente) => {
-        const name = cliente.name ? cliente.name.toLowerCase() : '';
-        // const mac = cliente.mac ? cliente.mac.toLowerCase() : '';
-        // const flowProfile = cliente.flowProfile ? cliente.flowProfile.toLowerCase() : '';
-        return (
-          name.startsWith(query)
-          // mac.includes(query) ||
-          // flowProfile.includes(query)
-        );
+        const name = cliente.name ? cliente.name.trim().toLowerCase() : '';
+        return name.match(regex);
       });
     },
 
@@ -301,6 +300,7 @@ export default defineComponent({
 .custom-background {
   background-color: aliceblue;
 }
+
 .box-container {
   border: 1px solid #e96d13;
 }

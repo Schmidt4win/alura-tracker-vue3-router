@@ -59,7 +59,9 @@
                 <th>ONU MAC</th>
                 <th>GPON</th>
                 <th>ONU Model</th>
-                <th>NOME</th>
+                <th>CLIENTE</th>
+                <th>CAIXA</th>
+                <th>TÉCNICO</th>
                 <th>CADASTRAR</th>
               </tr>
             </thead>
@@ -70,6 +72,12 @@
                 <td>{{ onu.onuModel }}</td>
                 <td>
                   <input class="input" type="text" v-model="onu.onuAlias" placeholder="Nome do cliente" name="onuAlias" />
+                </td>
+                <td>
+                  <input class="input" type="text" v-model="onu.Cto" placeholder="Nome da CTO" name="Cto" />
+                </td>
+                <td>
+                  <input class="input" type="text" v-model="onu.Tecnico" placeholder="Nome do Técnico" name="Tecnico" />
                 </td>
                 <td>
                   <button class="button is-primary" @click="registerOnu(onu)">
@@ -384,6 +392,8 @@ export default defineComponent({
           onuSerial: onu.onuMac,
           onuAlias: onu.onuAlias.toLocaleUpperCase(),
           user: user,
+          tecnico: onu.Tecnico.toLocaleUpperCase(),
+          cto: onu.Cto.toLocaleUpperCase()
         };
 
         this.showModal = false; // Close the ONU registration modal
@@ -524,7 +534,9 @@ export default defineComponent({
   padding: 0.5rem;
   text-align: left;
 }
-
+.input{
+  width: 100px;
+}
 .table th {
   background-color: #f5f5f5;
   font-weight: bold;
