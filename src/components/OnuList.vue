@@ -156,19 +156,19 @@ export default defineComponent({
 
   computed: {
     filteredOnuClient(): IOnuDataResponse[] {
-    const query = this.searchQuery.trim().toLowerCase();
-    if (!query) {
-      // If the search query is empty, reset the filteredOnuClient array and return an empty array
-      this.clearFilteredOnuClient();
-      return [];
-    } else {
-      // Filter the onuClient based on the search query
-      return this.onuClient.filter((cliente: IOnuDataResponse) => {
-        const name = cliente.name ? cliente.name.trim().toLowerCase() : '';
-        return name.startsWith(query);
-      });
-    }
-  },
+      const query = this.searchQuery.trim().toLowerCase();
+      if (!query) {
+        // If the search query is empty, reset the filteredOnuClient array and return an empty array
+        this.clearFilteredOnuClient();
+        return [];
+      } else {
+        // Filter the onuClient based on the search query
+        return this.onuClient.filter((cliente: IOnuDataResponse) => {
+          const name = cliente.name ? cliente.name.trim().toLowerCase() : '';
+          return name.startsWith(query);
+        });
+      }
+    },
 
     formattedJsonData(): Array<{
       onuAlias: string;
@@ -207,7 +207,7 @@ export default defineComponent({
   methods: {
     clearFilteredOnuClient() {
       this.filteredOnuClient = [...this.onuClient];
-  },
+    },
     async verificarOnu(cliente: IOnuDataResponse) {
       try {
         console.log(cliente);
@@ -236,27 +236,58 @@ export default defineComponent({
     },
 
     async fetchOnuData() {
-    try {
-      this.loading = true;
-      this.notificar(
-        TipoNotificacao.ATENCAO,
-        "EXCELENTE!",
-        "Os Clientes estão sendo aferidos. Aguarde alguns segundos!"
+  try {
+    this.loading = true;
+    this.notificar(
+      TipoNotificacao.ATENCAO,
+      "EXCELENTE!",
+      "Os Clientes estão sendo aferidos. Aguarde alguns segundos!"
+    );
+
+    const apiCalls = [];
+    const baseIp = "192.168.";
+    const startRange = 202;
+    const endRange = 209;
+
+    for (let i = startRange; i <= endRange; i++) {
+      const oltIp = baseIp + i + ".2";
+      apiCalls.push(
+        axios.post(
+          "https://api.heatmap.conectnet.net/verificar-onu-name-olt",
+          { oltIp }
+        )
       );
-
-      // Fetch data from the new endpoint
-      const response = await axios.get("https://api.heatmap.conectnet.net/allonuget");
-
-      // The response data should be an array of objects, so use it directly
-      const responseData: IOnuDataResponse[] = response.data;
-
-      // Set the onuClient data to the received array
-      this.onuClient = responseData;
-      this.loading = false;
-    } catch (error) {
-      console.error("Error fetching ONU data:", error);
     }
-  },
+
+    // Wait for all the API calls to complete
+    const responses = await axios.all(apiCalls);
+    let uniqueId = 1;
+
+    // Extract the data from each response and combine them into a single array
+    const combinedOnuClient: IOnuDataResponse[] = [];
+
+    responses.forEach((response) => {
+      const responseData: IOnuDataResponse[] = Array.isArray(response.data)
+        ? response.data
+        : Array.isArray(response.data.data)
+        ? response.data.data
+        : [];
+
+      responseData.forEach((item) => {
+        item._id = uniqueId++;
+      });
+
+      // Combine the client data into the combinedOnuClient array
+      combinedOnuClient.push(...responseData);
+    });
+
+    // Set the onuClient data to the combined result
+    this.onuClient = combinedOnuClient;
+    this.loading = false;
+  } catch (error) {
+    console.error("Error fetching ONU data:", error);
+  }
+},
     closeModal() {
       this.showModal = false;
     },

@@ -17,5 +17,5 @@ export default interface IOnuDataResponse {
   name: string
   mac: string;
   flowProfile: string;
-  _id: string 
+  _id: number
 }
