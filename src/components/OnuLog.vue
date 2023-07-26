@@ -148,43 +148,43 @@
       this.fetchOnuData();
     },
     computed: {
-      filteredClientes(): IOnuCliente[] {
-        if (!this.searchQuery) {
-          if (this.onuName) {
-            // Change the condition to check for onuName
-            return this.onuClient.filter(
-              (cliente: IOnuCliente) => cliente.onuAlias === this.onuName
-            );
-          }
-          return this.onuClient;
-        } else {
-          const query = this.searchQuery.toLowerCase();
-          return this.onuClient.filter((cliente: IOnuCliente) => {
-            const {
-              onuAlias,
-              oltIp,
-              oltPon,
-              onuVlan,
-              user,
-              onuSerial,
-              date_time,
-              cto,
-              tecnico
-            } = cliente;
-            return (
-              onuAlias.toLowerCase().includes(query) ||
-              oltIp.toLowerCase().includes(query) ||
-              oltPon.toLowerCase().includes(query) ||
-              onuSerial.toLowerCase().includes(query) ||
-              date_time.toLowerCase().includes(query) ||
-              onuVlan.toLowerCase().includes(query) ||
-              cto.toLowerCase().includes(query) ||
-              tecnico.toLowerCase().includes(query) ||
-              user.toLowerCase().includes(query)
-            );
-          });
-        }
-      },
+        filteredClientes(): IOnuCliente[] {
+    if (!this.searchQuery) {
+      if (this.onuName) {
+        // Change the condition to check for onuName
+        return this.onuClient.filter(
+          (cliente: IOnuCliente) => cliente.onuAlias === this.onuName
+        );
+      }
+      return this.onuClient;
+    } else {
+      const query = this.searchQuery.toLowerCase();
+      return this.onuClient.filter((cliente: IOnuCliente) => {
+        const {
+          onuAlias,
+          oltIp,
+          oltPon,
+          onuVlan,
+          user,
+          onuSerial,
+          date_time,
+          cto,
+          tecnico
+        } = cliente;
+        return (
+          (onuAlias && onuAlias.toLowerCase().includes(query)) ||
+          (oltIp && oltIp.toLowerCase().includes(query)) ||
+          (oltPon && oltPon.toLowerCase().includes(query)) ||
+          (onuSerial && onuSerial.toLowerCase().includes(query)) ||
+          (date_time && date_time.toLowerCase().includes(query)) ||
+          (onuVlan && onuVlan.toLowerCase().includes(query)) ||
+          (cto && cto.toLowerCase().includes(query)) ||
+          (tecnico && tecnico.toLowerCase().includes(query)) ||
+          (user && user.toLowerCase().includes(query))
+        );
+      });
+    }
+  },
       formattedJsonData(): Array<{
         clienteOnu: string;
         onuAlias: string;
