@@ -296,6 +296,7 @@ export default defineComponent({
     gpon: this.selectedOnu.gpon,
     onuModel: this.selectedOnu.onuModel,
     oltRamal: this.selectedOnu.oltRamal,
+    onuAlias: this.onu.onuAlias
   };
 
 

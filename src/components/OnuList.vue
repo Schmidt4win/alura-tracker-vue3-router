@@ -1,29 +1,25 @@
 <template>
   <div class="max-container">
     <div class="search-container">
-      <input
-        class="input"
-        type="text"
-        v-model="searchQuery"
-        placeholder="PESQUISE POR CLIENTE"
-      />
+      <input class="input" type="text" v-model="searchQuery" placeholder="PESQUISE POR CLIENTE" />
     </div>
 
     <div class="client-container">
-      <Box
-        class="box-container"
-        v-for="cliente in filteredOnuClient"
-        :key="cliente._id"
-      >
+      <Box class="box-container" v-for="cliente in filteredOnuClient" :key="cliente._id">
+
+        <!-- Use cliente.mac as the key -->
         <div class="columns">
           <div class="column">
             <strong class="label">cliente:</strong> {{ cliente.name }}
+            <!-- Use cliente.name instead of cliente.Alias -->
           </div>
           <div class="column">
             <strong class="label">Mac:</strong> {{ cliente.mac }}
+            <!-- Use cliente.mac instead of cliente.Serial -->
           </div>
           <div class="column">
             <strong class="label">VLAN:</strong> {{ cliente.flowProfile }}
+            <!-- Use cliente.flowProfile instead of cliente.Interface -->
           </div>
           <div class="column">
             <button class="button" @click="verificarOnu(cliente)">
@@ -41,15 +37,9 @@
           <p class="modal-card-title custom-text-color">
             ONUs da OLT: {{ selectedOnuName }}
           </p>
-          <button
-            class="delete"
-            aria-label="close"
-            @click="closeSelectedOnuModal"
-          ></button>
+          <button class="delete" aria-label="close" @click="closeSelectedOnuModal"></button>
         </header>
-        <section
-          class="modal-card-body custom-terminal-background custom-text-color"
-        >
+        <section class="modal-card-body custom-terminal-background custom-text-color">
           <table class="table is-fullwidth is-bordered is-striped is-narrow">
             <thead>
               <tr>
@@ -78,15 +68,9 @@
       <div class="modal-card json-modal-card">
         <header class="modal-card-head custom-background">
           <p class="modal-card-title custom-text-color">SINAL DO CLIENTE</p>
-          <button
-            class="delete"
-            aria-label="close"
-            @click="closeJsonModal"
-          ></button>
+          <button class="delete" aria-label="close" @click="closeJsonModal"></button>
         </header>
-        <section
-          class="modal-card-body custom-terminal-background custom-text-color"
-        >
+        <section class="modal-card-body custom-terminal-background custom-text-color">
           <div v-if="jsonData.Alias">
             <Box class="box-container">
               Dados Basicos:
@@ -95,8 +79,7 @@
               <p><strong>Rx:</strong> {{ jsonData["Power Level"] }}</p>
               <p><strong>Tx:</strong> {{ jsonData.RSSI }}</p>
             </Box>
-            <Box class="box-container"
-              >Dados de Diagnostico:
+            <Box class="box-container">Dados de Diagnostico:
               <p><strong>Mac:</strong> {{ jsonData.Serial }}</p>
               <p><strong>Model:</strong> {{ jsonData.Model }}</p>
               <p><strong>Distance:</strong> {{ jsonData.Distance }}</p>
@@ -132,6 +115,7 @@ import axios from "axios";
 import Icliente from "../interfaces/ICliente";
 import IOnu from "../interfaces/IOnu";
 import IOnuDataResponse from "../interfaces/IOnuDataResponse";
+
 import Box from "./Box.vue";
 import { TipoNotificacao } from "@/interfaces/INotificação";
 import useNotificador from "@/hooks/notificador";
@@ -156,7 +140,7 @@ export default defineComponent({
       selectedOnuName: "",
       showSelectedOnuModal: false,
       selectedcliente: null as Icliente | null,
-      loading: false,
+      loading: false
     };
   },
   beforeMount() {
@@ -174,12 +158,15 @@ export default defineComponent({
     filteredOnuClient(): IOnuDataResponse[] {
       const query = this.searchQuery.trim().toLowerCase();
       if (!query) {
+        // If the search query is empty, reset the filteredOnuClient array and return an empty array
         this.clearFilteredOnuClient();
         return [];
       } else {
+        // Filter the onuClient based on the search query
         return this.onuClient.filter((cliente: IOnuDataResponse) => {
-          const name = cliente.name ? cliente.name.trim().toLowerCase() : "";
-          return name.startsWith(query);
+          const name = cliente.name ? cliente.name.trim().toLowerCase() : '';
+          const mac = cliente.mac ? cliente.mac.trim().toLowerCase() : '';
+          return name.startsWith(query) || mac.startsWith(query)
         });
       }
     },
@@ -203,6 +190,7 @@ export default defineComponent({
       for (const clienteOnu in jsonData) {
         const data = jsonData[clienteOnu];
 
+        // Check if the onuMac property exists before using it
         const formattedItem = {
           onuAlias: data.Alias ? data.Alias : "N/A",
           mac: data.Serial ? data.Serial : "N/A",
@@ -232,12 +220,16 @@ export default defineComponent({
           }
         );
 
+        // The response data should be an object containing the ONU data
         const responseData = response.data;
 
+        // Set the jsonData to the onuData received from the server
         this.jsonData = responseData;
 
+        // Show the jsonmodal with the received data
         this.showJsonModal = true;
 
+        // Add console log to check the jsonData
         console.log(this.jsonData);
       } catch (error) {
         console.error("Error verifying ONU:", error);
@@ -268,25 +260,29 @@ export default defineComponent({
           );
         }
 
+        // Wait for all the API calls to complete
         const responses = await axios.all(apiCalls);
         let uniqueId = 1;
 
+        // Extract the data from each response and combine them into a single array
         const combinedOnuClient: IOnuDataResponse[] = [];
 
         responses.forEach((response) => {
           const responseData: IOnuDataResponse[] = Array.isArray(response.data)
             ? response.data
             : Array.isArray(response.data.data)
-            ? response.data.data
-            : [];
+              ? response.data.data
+              : [];
 
           responseData.forEach((item) => {
             item._id = uniqueId++;
           });
 
+          // Combine the client data into the combinedOnuClient array
           combinedOnuClient.push(...responseData);
         });
-        console.log(combinedOnuClient[33])
+
+        // Set the onuClient data to the combined result
         this.onuClient = combinedOnuClient;
         this.loading = false;
       } catch (error) {
@@ -358,18 +354,26 @@ export default defineComponent({
   padding: 1.25rem;
 }
 
+/* .max-container {
+    max-height: calc(100vh - 50px);
+    overflow-y: auto;
+    padding: 1.25rem;
+  } */
+
 .modal.is-active {
   display: flex !important;
+  /* Force the modal to be visible */
 }
 
 .modal-card {
   background-color: white;
   border-radius: 5px;
   max-width: 80%;
-
+  /* Adjust the width as needed */
   max-height: 80%;
-
+  /* Adjust the height as needed */
   overflow-y: auto;
+  /* Add scroll if the modal content exceeds the height */
 }
 
 .modal-card-title {
@@ -396,6 +400,7 @@ export default defineComponent({
 
 .modal.is-active .modal-background {
   display: block !important;
+  /* Force the background to be visible */
 }
 
 .table {
@@ -421,11 +426,13 @@ export default defineComponent({
   display: flex;
   align-items: center;
   position: relative;
+  /* Ensure relative positioning for z-index to work */
 }
 
 .custom-select {
   z-index: 1;
   height: 50px;
+  /* Set z-index to a higher value to ensure it's displayed above other elements */
 }
 
 .select {

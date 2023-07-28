@@ -1,5 +1,5 @@
 <template>
-  <header class="conter">
+  <header>
     <div>
       <img class="logo-container" src="../assets/logo.jpg" alt="">
     </div>
@@ -19,11 +19,6 @@
           </RouterLink>
         </li> -->
         <li>
-          <RouterLink to="/liberarclientes" class="link">
-            <i class="fas fa-users"></i> Clientes por OLT e PON
-          </RouterLink>
-        </li>
-        <li>
           <RouterLink to="/pononu" class="link">
             <i class="fas fa-users"></i> Clientes por OLT e PON
           </RouterLink>
@@ -39,7 +34,7 @@
           </RouterLink>
         </li>
         <li>
-          <RouterLink to="/ramal" class="link">
+          <RouterLink to="/liberarclientes" class="link">
             <i class="fa-solid fa-gear"></i> Liberar Clientes
           </RouterLink>
         </li>
@@ -195,11 +190,11 @@ header {
 }
 
 .link:hover {
-  color: #faf0ca;
+  color: #ff811a;
 }
 
 .link.router-link-active {
-  color: #faf0ca;
+  color: #ff811a;
 }
 
 .logout-button {
@@ -213,8 +208,4 @@ header {
   color: #faf0ca;
 }
 
-.conter {
-    
-    max-height: 100%;
-  }
 </style>
