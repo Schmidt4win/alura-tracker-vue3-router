@@ -8,4 +8,11 @@ export default interface IAllOnuLiberarData {
     oltPon: string;
     ponVlan: string;
     oltName: string;
+    cto: string
+    tecnico: string
+    onuSerial: string
+    user: string
+    onuVlan: string
+    onuAlias: string;
+    
   }

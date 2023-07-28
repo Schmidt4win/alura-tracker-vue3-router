@@ -18,4 +18,14 @@ export default interface IOnuDataResponse {
   mac: string;
   flowProfile: string;
   _id: number
+  onuMac: string
+  ponVlan: string
+  onuVlan: string
+  oltPon: string
+  onuAlias: string;
+  
+  gpon: string;
+  onuModel: string;
+  
+  oltRamal: string;
 }
