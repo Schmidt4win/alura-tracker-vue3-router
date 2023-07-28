@@ -268,6 +268,7 @@ export default defineComponent({
     },
   },
   methods: {
+    
     async fetchRamalData() {
       try {
         const response = await fetch(

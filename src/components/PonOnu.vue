@@ -126,12 +126,9 @@
             <button class="delete" aria-label="close" @click="closeJsonModal"></button>
           </header>
           <section class="modal-card-body custom-terminal-background custom-text-color">
-            <div v-for="data in formattedJsonData" :key="data.clienteOnu">
+            <div>
+              {{ jsonData }}
               
-              <p><strong>Mac:</strong> {{ data.mac.toLocaleUpperCase() }}</p>
-              <p><strong>Status:</strong> {{ data.status }}</p>
-              <p><strong>Rx:</strong> {{ data.tx }}</p>
-              <p><strong>Tx:</strong> {{ data.rx }}</p>
             </div>
           </section>
           <footer class="modal-card-foot custom-background">

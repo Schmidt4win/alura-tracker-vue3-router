@@ -12,6 +12,7 @@ import TalaoLista from "@/components/TalaoLista.vue"
 import PonSignal from "@/components/PonSignal.vue"
 import PonOnu from "@/components/PonOnu.vue"
 import OnuLog from "@/components/OnuLog.vue"
+import LiberarCliente from "@/components/LiberarClientes.vue"
 
 
 
@@ -59,9 +60,9 @@ const rotas: RouteRecordRaw[] = [
         component: Ramal,
       },
       {
-        path: "/talao",
-        name: "Talao",
-        component: TalaoForm,
+        path: "/liberarclientes",
+        name: "Liberar Clients",
+        component: LiberarCliente,
       },
       {
         path: "/talaolista",

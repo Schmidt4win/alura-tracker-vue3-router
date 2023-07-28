@@ -1,5 +1,5 @@
 <template>
-  <header>
+  <header class="conter">
     <div>
       <img class="logo-container" src="../assets/logo.jpg" alt="">
     </div>
@@ -18,6 +18,11 @@
             <i class="fas fa-project-diagram"></i> Projetos
           </RouterLink>
         </li> -->
+        <li>
+          <RouterLink to="/liberarclientes" class="link">
+            <i class="fas fa-users"></i> Clientes por OLT e PON
+          </RouterLink>
+        </li>
         <li>
           <RouterLink to="/pononu" class="link">
             <i class="fas fa-users"></i> Clientes por OLT e PON
@@ -208,4 +213,8 @@ header {
   color: #faf0ca;
 }
 
+.conter {
+    
+    max-height: 100%;
+  }
 </style>
