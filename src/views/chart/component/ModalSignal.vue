@@ -1,23 +1,30 @@
 <template>
-  <div class="modal" v-if="selectedClient">
-    <div class="modal-content">
-      <span class="close" @click="closeModal">&times;</span>
-      <h3>{{ selectedClient.name }}</h3>
-      <div v-for="(data, date_time) in clientDataByDate" :key="date_time">
-        <p>Status: {{ data.Status }}</p>
-        <p>Power Level: {{ parseFloat(data['Power Level']) }}</p>
-        <p>RSSI: {{ parseFloat(data.RSSI) }}</p>
-        <p>Data: {{ date_time }}</p>
-        <hr />
+    <div class="modal" v-if="selectedClient">
+      <div class="modal-content">
+        <span class="close" @click="closeModal">&times;</span>
+        <h3>{{ selectedClient.name }}</h3>
+        <Box>
+        
+          <apexchart
+            type="line"
+            :options="chartOptions"
+            :series="chartSeries"
+            width="100%"
+            height="400"
+          />
+        </Box>
       </div>
     </div>
-  </div>
-</template>
-
+  </template>
   
   <script lang="ts">
-  export default {
-    name: "ModalSignal",
+  import { defineComponent } from 'vue';
+  import Box from '@/components/Box.vue';
+  import VueApexCharts from 'vue3-apexcharts';
+  
+  export default defineComponent({
+    name: 'ModalSignal',
+   
     props: {
       selectedClient: {
         type: Object,
@@ -28,13 +35,96 @@
         default: () => ({}),
       },
     },
-    methods: {
-      closeModal() {
-        this.$emit("close");
+    components: {
+      apexchart: VueApexCharts,
+      Box
+    },
+    computed: {
+      chartOptions() {
+        return {
+          chart: {
+            height: 350,
+            type: 'line',
+            dropShadow: {
+              enabled: true,
+              color: '#000',
+              top: 18,
+              left: 7,
+              blur: 10,
+              opacity: 0.2,
+            },
+            toolbar: {
+              show: false,
+            },
+          },
+          colors: ['#77B6EA', '#545454'],
+          dataLabels: {
+            enabled: true,
+          },
+          stroke: {
+            curve: 'smooth',
+          },
+          title: {
+            text: 'Historico de Sinal',
+            align: 'left',
+          },
+          grid: {
+            borderColor: '#e7e7e7',
+            row: {
+              colors: ['#f3f3f3', 'transparent'],
+              opacity: 0.5,
+            },
+          },
+          markers: {
+            size: 2,
+          },
+          xaxis: {
+            categories: Object.keys(this.clientDataByDate), // Use the dates as categories
+            title: {
+              text: 'Data da Leitura',
+            },
+          },
+          yaxis: {
+            title: {
+              text: 'Diferença entra as',
+            },
+          },
+          legend: {
+            position: 'top',
+            horizontalAlign: 'right',
+            floating: true,
+            offsetY: -25,
+            offsetX: -5,
+          },
+        };
+      },
+      chartSeries() {
+        // Convert your clientDataByDate object into a format suitable for ApexCharts
+        const series = [
+          {
+            name: 'Tx',
+            data: Object.values(this.clientDataByDate).map((data) =>
+              parseFloat(data.RSSI)
+            ),
+          },
+          {
+            name: 'Rx',
+            data: Object.values(this.clientDataByDate).map((data) =>
+              parseFloat(data['Power Level'])
+            ),
+          },
+        ];
+        return series;
       },
     },
-  };
+    methods: {
+      closeModal() {
+        this.$emit('close');
+      },
+    },
+  });
   </script>
+  
   
   <style scoped>
 .modal {

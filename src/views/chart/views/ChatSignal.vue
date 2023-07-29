@@ -5,8 +5,13 @@
       </div>
   
       <div class="conter">
+        <input
+          type="text"
+          v-model="searchQuery"
+          placeholder="Pesquisar cliente por nome"
+        />
         <h2>Nomes dos Clientes</h2>
-        <div v-for="(client, index) in nameList" :key="index">
+        <div v-for="(client, index) in filteredClients" :key="index">
           <h3 @click="openModal(client)">{{ client.name }}</h3>
         </div>
       </div>
@@ -53,11 +58,13 @@
         ModalSignal
     },
     data() {
-      return {
-        fetchedData: {} as IDadosCliente[],
-        nameList: [] as Cliente[],
-        selectedClient: null as Cliente | null,
-      };
+        return {
+      fetchedData: {} as IDadosCliente[],
+      nameList: [] as Cliente[],
+      selectedClient: null as Cliente | null,
+      searchQuery: "",
+      
+    };
     },
     async created() {
       try {
@@ -70,16 +77,16 @@
       }
     },
     methods: {
- openModal(client: Cliente) {
-      // Set the selected client to open the modal
-      this.selectedClient = client;
-      // Group client data by date for the modal content
-      this.groupClientDataByDate(client);
-    },
-    closeModal() {
-      // Close the modal by setting the selected client to null
-      this.selectedClient = null;
-    },
+      openModal(client: Cliente) {
+        // Set the selected client to open the modal
+        this.selectedClient = client;
+        // Group client data by date for the modal content
+        this.groupClientDataByDate(client);
+      },
+      closeModal() {
+        // Close the modal by setting the selected client to null
+        this.selectedClient = null;
+      },
       groupClientsByName() {
         if (!this.fetchedData) {
           return;
@@ -103,10 +110,6 @@
   
         this.nameList = namesList;
       },
-      selectClient(client: Cliente) {
-        this.selectedClient = client;
-        this.groupClientDataByDate(client);
-      },
       groupClientDataByDate(client: Cliente) {
         if (!this.fetchedData) {
           return;
@@ -128,6 +131,18 @@
   
         this.clientDataByDate = clientDataByDate;
       },
+    },
+    computed: {
+        filteredClients(): Cliente[] {
+      if (!this.searchQuery) {
+        return this.nameList;
+      }
+
+      const lowerCaseQuery = this.searchQuery.toLowerCase();
+      return this.nameList.filter((client: Cliente) =>
+        client.name.toLowerCase().includes(lowerCaseQuery)
+      );
+    }
     },
     setup() {
       return {
