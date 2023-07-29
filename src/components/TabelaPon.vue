@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
     <div>
         <Box>        
         <table class="table">
@@ -28,7 +28,7 @@
     </table>
     </Box>
   
-      <!-- Modal -->
+      
       <div v-if="showModal" class="modal is-active">
         <div class="modal-background" @click="toggleModal"></div>
         <div class="modal-content">
@@ -44,7 +44,7 @@
                   <div class="column">{{ cliente.name }}</div>
                   <div class="column">{{ cliente["Power Level"] }}</div>
                   <div class="column">{{ cliente.RSSI }}</div>
-                  <!-- Add other properties here -->
+                  
                 </div>
               </div>
             </div>
@@ -362,4 +362,4 @@
   .modal-content-box {
     padding: 1rem;
   }
-  </style>
+  </style> -->

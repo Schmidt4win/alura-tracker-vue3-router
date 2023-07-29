@@ -49,8 +49,8 @@
           </RouterLink>
         </li>
         <li>
-          <RouterLink to="/tabelapon" class="link">
-            <i class="fa-solid fa-list"></i> Pon Signal TAbela
+          <RouterLink to="/chartsignal" class="link">
+            <i class="fa-solid fa-list"></i> Chart
           </RouterLink>
         </li>
         <!-- <li>

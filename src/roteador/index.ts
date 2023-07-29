@@ -15,6 +15,7 @@ import OnuLog from "@/components/OnuLog.vue"
 import LiberarCliente from "@/components/LiberarClientes.vue"
 import ListaData from "@/components/ListaData.vue"
 import TabelaPon from "@/components/TabelaPon.vue"
+import ChartSignal from "@/views/chart/views/ChatSignal.vue"
 
 
 
@@ -67,9 +68,9 @@ const rotas: RouteRecordRaw[] = [
         component: LiberarCliente,
       },
       {
-        path: "/tabelapon",
-        name: "Tabela Pon",
-        component: TabelaPon,
+        path: "chartsignal",
+        name: "Chart signal",
+        component: ChartSignal,
       },
       
       ]
