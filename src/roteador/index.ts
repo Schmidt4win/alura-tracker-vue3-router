@@ -13,6 +13,8 @@ import PonSignal from "@/components/PonSignal.vue"
 import PonOnu from "@/components/PonOnu.vue"
 import OnuLog from "@/components/OnuLog.vue"
 import LiberarCliente from "@/components/LiberarClientes.vue"
+import ListaData from "@/components/ListaData.vue"
+import TabelaPon from "@/components/TabelaPon.vue"
 
 
 
@@ -55,9 +57,9 @@ const rotas: RouteRecordRaw[] = [
         component: OnuLog,       
       },
       {
-        path: "/ramal",
-        name: "Ramal",
-        component: Ramal,
+        path: "/listadata",
+        name: "ListaData",
+        component: ListaData,
       },
       {
         path: "/liberarclientes",
@@ -65,9 +67,9 @@ const rotas: RouteRecordRaw[] = [
         component: LiberarCliente,
       },
       {
-        path: "/talaolista",
-        name: "Lista de Talões",
-        component: TalaoLista,
+        path: "/tabelapon",
+        name: "Tabela Pon",
+        component: TabelaPon,
       },
       
       ]

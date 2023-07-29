@@ -17,14 +17,13 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import BarraLateralMobile from "../components/BarraLateralMobile.vue"
+
 import BarraLateral from "../components/BarraLateral.vue"
 import NotificaçõesVue from '@/components/Notificações.vue';
 
 export default defineComponent({
   name: 'HomeView',
   components: {
-    BarraLateralMobile,
     BarraLateral,
     NotificaçõesVue
   },

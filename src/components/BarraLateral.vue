@@ -43,6 +43,16 @@
             <i class="fa-solid fa-list"></i> Logs de cadastro
           </RouterLink>
         </li>
+        <li>
+          <RouterLink to="/listadata" class="link">
+            <i class="fa-solid fa-list"></i> Lista por data
+          </RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/tabelapon" class="link">
+            <i class="fa-solid fa-list"></i> Pon Signal TAbela
+          </RouterLink>
+        </li>
         <!-- <li>
           <RouterLink to="/talao" class="link">
             <i class="fas fa-pen"></i> Cadastro de Talao

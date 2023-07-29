@@ -63,6 +63,43 @@
       </div>
     </div>
 
+    <div class="modal is-active" v-if="editModalShow">
+      <div class="modal-background"></div>
+      <div class="modal-card json-modal-card">
+        <header class="modal-card-head custom-background">
+          <p class="modal-card-title custom-text-color">SINAL DO CLIENTE</p>
+          <button class="delete" aria-label="close" @click="closeEditModalShow"></button>
+        </header>
+        <section class="modal-card-body custom-terminal-background custom-text-color">
+          <div v-if="jsonData.Alias">
+            <Box class="box-container">
+              Nome:
+              <p> {{ jsonData.Alias }} </p>
+              
+              
+              
+            </Box>
+            <Box class="box-container">Novo Nome:
+              <p><input class="input is-primary" v-model="newAliasInput" type="text"></p>
+            </Box>
+            
+          </div>
+          <div v-else>
+            <p>No data available for this ONU.</p>
+          </div>
+        </section>
+        <footer class="modal-card-foot custom-background">
+          <button class="button is-primary" @click="salvarNovosDados(jsonData, newAliasInput)">
+            Editar
+          </button>
+          <button class="button is-primary" @click="closeJsonModal">
+            Fechar
+          </button>
+        </footer>
+      </div>
+    </div>
+
+
     <div class="modal is-active" v-if="showJsonModal">
       <div class="modal-background"></div>
       <div class="modal-card json-modal-card">
@@ -88,6 +125,7 @@
               </p>
               <p><strong>Last Update:</strong> {{ jsonData["Last Update"] }}</p>
             </Box>
+            <button class="button is-primary" @click="editclientmodal(jsonData)"> Editar</button>
           </div>
           <div v-else>
             <p>No data available for this ONU.</p>
@@ -128,6 +166,9 @@ export default defineComponent({
   },
   data() {
     return {
+      newAliasInput: "",
+      newVlanInput: "",
+      editModalShow: false,
       onuClient: [] as IOnuDataResponse[],
       activeDropdown: null as string | null,
       searchQuery: "",
@@ -206,11 +247,18 @@ export default defineComponent({
     },
   },
   methods: {
+    editclientmodal(jsonData: any) {
+      console.log(jsonData)
+      this.showJsonModal = false
+      this.editModalShow = true
+    },
+
     clearFilteredOnuClient() {
       this.filteredOnuClient = [...this.onuClient];
     },
     async verificarOnu(cliente: IOnuDataResponse) {
       try {
+
         console.log(cliente);
         const response = await axios.post(
           "https://api.heatmap.conectnet.net/verificar-onu-completo",
@@ -220,9 +268,10 @@ export default defineComponent({
           }
         );
 
+
         // The response data should be an object containing the ONU data
         const responseData = response.data;
-
+        responseData.oltIp = cliente.oltIp;
         // Set the jsonData to the onuData received from the server
         this.jsonData = responseData;
 
@@ -230,10 +279,58 @@ export default defineComponent({
         this.showJsonModal = true;
 
         // Add console log to check the jsonData
-        console.log(this.jsonData);
+        console.log("dados do cliente:", this.jsonData);
       } catch (error) {
         console.error("Error verifying ONU:", error);
       }
+    },
+
+    closeEditModalShow() {
+      this.editModalShow = false
+    },
+    sanitizeInput(input: any) {
+      // Convert input to uppercase and replace spaces with dashes
+      return input.trim().toUpperCase().replace(/\s+/g, "-");
+    },
+
+   async salvarNovosDados(jsonData: any, newAliasInput: any) {
+      
+      console.log(jsonData.Alias)
+      const sanitizedInput = this.sanitizeInput(newAliasInput);
+      this.jsonData.onuAlias = sanitizedInput
+      console.log(jsonData)
+      this.loading = true;
+      this.editModalShow = false;
+      this.notificar(
+          TipoNotificacao.SUCESSO,
+          "EXCELENTE!",
+          "O Cliente esta sendo editado com sucesso!"
+        );
+      const response = await axios.post(
+          "https://api.heatmap.conectnet.net/editar-onu", // Substitua pela URL correta do endpoint de atualização
+          jsonData
+        );
+
+        if (response.status === 200) {
+          this.loading = false;
+          // Se a resposta for bem-sucedida, feche o modal e mostre uma notificação de sucesso
+          
+          this.notificar(
+          TipoNotificacao.SUCESSO,
+          "EXCELENTE!",
+          "O Cliente foi editado com sucesso!"
+          
+        );
+        this.fetchOnuData()
+        } else {
+          // Se a resposta for diferente de 200, mostre uma notificação de erro
+          this.notificar(
+          TipoNotificacao.FALHA,
+          "Aconteceu algo estranho!",
+          "Tente Novamente mais Tarde"
+        );
+        }
+
     },
 
     async fetchOnuData() {
@@ -284,6 +381,7 @@ export default defineComponent({
 
         // Set the onuClient data to the combined result
         this.onuClient = combinedOnuClient;
+        
         this.loading = false;
       } catch (error) {
         console.error("Error fetching ONU data:", error);
