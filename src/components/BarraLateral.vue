@@ -43,14 +43,14 @@
             <i class="fa-solid fa-list"></i> Logs de cadastro
           </RouterLink>
         </li>
-        <li>
+        <!-- <li>
           <RouterLink to="/listadata" class="link">
             <i class="fa-solid fa-list"></i> Lista por data
           </RouterLink>
-        </li>
+        </li> -->
         <li>
           <RouterLink to="/chartsignal" class="link">
-            <i class="fa-solid fa-list"></i> Chart
+            <i class="fa-solid fa-chart-simple"></i> Historico de sinal dos Clientes
           </RouterLink>
         </li>
         <!-- <li>

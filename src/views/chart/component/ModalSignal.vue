@@ -3,7 +3,7 @@
       <div class="modal-content">
         <span class="close" @click="closeModal">&times;</span>
         <h3>{{ selectedClient.name }}</h3>
-        <Box>
+        <Box class="box-inside-modal">
         
           <apexchart
             type="line"
@@ -86,7 +86,8 @@
           },
           yaxis: {
             title: {
-              text: 'Diferença entra as',
+              text: 'Diferença',
+              
             },
           },
           legend: {
@@ -127,45 +128,59 @@
   
   
   <style scoped>
-.modal {
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+  .modal {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-.modal-content {
-  background-color: white;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-  max-height: 80vh;
-  overflow-y: auto;
-  position: relative;
-}
+  .modal-content {
+    background-color: rgb(12, 1, 73);
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add a box shadow */
+  }
 
-.close {
-  color: #aaa;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-}
+  .close {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s ease; /* Add a smooth color transition on hover */
+  }
 
-.close:hover,
-.close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-}
+  .close:hover,
+  .close:focus {
+    color: #333;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  /* Styling the modal title */
+  h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: aliceblue;
+  }
+
+  /* Style for the Box inside the modal */
+  .box-inside-modal {
+    margin-top: 1rem;
+  }
 </style>
-  
   

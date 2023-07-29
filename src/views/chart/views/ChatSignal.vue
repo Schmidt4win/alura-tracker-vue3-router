@@ -1,19 +1,22 @@
 <template>
-    <div>
-      <div class="conter">
+    <div class="page-container">
+      <div class="">
         <h1 class="title">Lista de Clientes</h1>
       </div>
   
-      <div class="conter">
+      <div class="">
         <input
+        class="input"
           type="text"
           v-model="searchQuery"
           placeholder="Pesquisar cliente por nome"
         />
         <h2>Nomes dos Clientes</h2>
+        <Box class="conter">
         <div v-for="(client, index) in filteredClients" :key="index">
-          <h3 @click="openModal(client)">{{ client.name }}</h3>
+          <Box class="caixa-nomes" @click="openModal(client)">{{ client.name }}</Box>
         </div>
+    </Box>
       </div>
   
       <!-- The Modal component -->
@@ -29,6 +32,7 @@
   import { defineComponent } from 'vue';
   import axios from 'axios';
   import ModalSignal from "@/views/chart/component/ModalSignal.vue"
+  import Box from '@/components/Box.vue';
   interface Cliente {
     mac: string;
     Status: string;
@@ -55,7 +59,8 @@
   export default defineComponent({
     name: "ChartSignal",
     components: {
-        ModalSignal
+        ModalSignal,
+        Box
     },
     data() {
         return {
@@ -155,13 +160,61 @@
   <style scoped>
   .conter {
     padding: 2rem;
-    max-height: calc(80vh - 100px);
+    max-height: calc(100vh - 240px);
     /* Set a maximum height for the container */
     overflow-y: auto;
     overflow-x: auto;
-    max-width: calc(80vh - 100px);
     background-color: aliceblue;
     padding: 1.25rem;
   }
-  </style>
-  
+
+  .page-container {
+    padding: 2rem;
+    background-color: rgb(12, 1, 73);
+  }
+
+  .input {
+    max-width: 400px;
+  }
+
+  .caixa-nomes {
+    margin: 10px;
+    padding: 1.25rem;
+    border: 2px solid #e96d13; /* Adding a border */
+    border-radius: 5px; /* Rounded corners */
+    background-color: #f9f9f9; /* Background color for the names box */
+    cursor: pointer; /* Change cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth transition */
+  }
+
+  /* Highlight text on hover */
+  .caixa-nomes:hover {
+    background-color: rgb(34, 130, 214);
+  }
+
+  /* Styling the title */
+  .title {
+    font-size: 2rem;
+    color: #fff;
+    margin-bottom: 1rem;
+  }
+
+  /* Styling the subtitle */
+  h2 {
+    font-size: 1.5rem;
+    color: aliceblue;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Styling the search query input */
+  .input {
+    max-width: 400px;
+    font-size: 1rem;
+    padding: 0.5rem;
+    border: 1px solid #333;
+    border-radius: 5px;
+  }
+
+ 
+</style>
