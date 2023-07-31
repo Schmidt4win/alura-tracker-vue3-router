@@ -122,7 +122,12 @@
       closeModal() {
         this.$emit('close');
       },
-    },
+       },
+
+      created () {
+        console.log(this.selectedClient)
+        console.log(this.clientDataByDate)
+      },
   });
   </script>
   

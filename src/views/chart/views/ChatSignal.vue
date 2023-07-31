@@ -85,8 +85,10 @@
       openModal(client: Cliente) {
         // Set the selected client to open the modal
         this.selectedClient = client;
+        
         // Group client data by date for the modal content
         this.groupClientDataByDate(client);
+        console.log(this.clientDataByDate)
       },
       closeModal() {
         // Close the modal by setting the selected client to null
@@ -159,18 +161,18 @@
   
   <style scoped>
   .conter {
-    padding: 2rem;
+    
     max-height: calc(100vh - 240px);
     /* Set a maximum height for the container */
     overflow-y: auto;
     overflow-x: auto;
-    background-color: aliceblue;
+    background-color: rgb(12, 1, 73);
     padding: 1.25rem;
   }
 
   .page-container {
     padding: 2rem;
-    background-color: rgb(12, 1, 73);
+    
   }
 
   .input {
@@ -178,7 +180,7 @@
   }
 
   .caixa-nomes {
-    margin: 10px;
+    margin-bottom: 10px;
     padding: 1.25rem;
     border: 2px solid #e96d13; /* Adding a border */
     border-radius: 5px; /* Rounded corners */
@@ -190,6 +192,7 @@
   /* Highlight text on hover */
   .caixa-nomes:hover {
     background-color: rgb(34, 130, 214);
+    color: aliceblue;
   }
 
   /* Styling the title */
