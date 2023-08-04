@@ -254,36 +254,29 @@ export default defineComponent({
     },
 
     async cadastrarOnu(result: any) {
-      // Check if all fields are filled
-      if (!this.onu.onuAlias || !this.onu.Cto || !this.onu.Tecnico) {
-        this.showLiberationModal = true;
+  // Check if all fields are filled
+  if (!this.onu.onuAlias || !this.onu.Cto || !this.onu.Tecnico) {
+    this.showLiberationModal = true;
+    return;
+  }
 
-        return;
-      }
+  const authData = localStorage.getItem("authData");
+  if (authData === null) {
+    console.error("Authentication data is missing from localStorage.");
+    return;
+  }
 
-      const authData = localStorage.getItem("authData");
-      if (authData === null) {
-        console.error("Authentication data is missing from localStorage.");
-        return;
-      }
+  const { username } = JSON.parse(authData) as IAuthData;
+  const user = username ?? "Unknown User";
+  console.log(user);
 
-      const { username } = JSON.parse(authData) as IAuthData;
-      const user = username ?? "Unknown User";
-      console.log(user);
+  // Convert spaces to hyphens and uppercase the values
+  this.onu.onuAlias = this.onu.onuAlias.replace(/\s+/g, "-").toUpperCase();
+  this.onu.Cto = this.onu.Cto.replace(/\s+/g, "-").toUpperCase();
+  this.onu.Tecnico = this.onu.Tecnico.replace(/\s+/g, "-").toUpperCase();
 
-      // Convert spaces to hyphens and uppercase the values
-      this.onu.onuAlias = this.onu.onuAlias
-        .replace(/\s+/g, "-")
-        .toLocaleUpperCase();
-      this.onu.Cto = this.onu.Cto.replace(/\s+/g, "-").toLocaleUpperCase();
-      this.onu.Tecnico = this.onu.Tecnico.replace(
-        /\s+/g,
-        "-"
-      ).toLocaleUpperCase();
-
-      // Combine the data with selectedOnu and other necessary fields
-
-      const combinedData: any = {
+  // Combine the data with selectedOnu and other necessary fields
+  const combinedData: any = {
     oltIp: this.selectedOnu.oltIp,
     oltPon: this.selectedOnu.oltPon,
     onuVlan: this.selectedOnu.ponVlan,
@@ -296,51 +289,48 @@ export default defineComponent({
     gpon: this.selectedOnu.gpon,
     onuModel: this.selectedOnu.onuModel,
     oltRamal: this.selectedOnu.oltRamal,
-    onuAlias: this.onu.onuAlias
+    onuAlias: this.onu.onuAlias,
   };
 
+  console.log("Combined Data:", combinedData);
 
+  // Send a POST request to the endpoint
+  try {
+    this.showLiberationModal = false;
+    this.notificar(
+      TipoNotificacao.ATENCAO,
+      "EXCELENTE!",
+      `O cliente está sendo cadastrado. Aguarde alguns segundos!`
+    );
+    this.loading = true;
+    const response = await axios.post(
+      "https://api.heatmap.conectnet.net/liberar-onu",
+      combinedData
+    );
 
-      console.log("Combined Data:", combinedData);
+    if (response.status === 200) {
+      this.loading = false;
+    }
+    this.notificar(
+      TipoNotificacao.SUCESSO,
+      "EXCELENTE!",
+      `Dados sendo aferidos...`
+    );
 
-      // Send a POST request to the endpoint
-      try {
-        this.showLiberationModal = false;
-        this.notificar(
-          TipoNotificacao.ATENCAO,
-          "EXCELENTE!",
-          `O cliente está sendo cadastrado. Aguarde alguns segundos!`
-        );
-        this.loading = true;
-        const response = await axios.post(
-          "https://api.heatmap.conectnet.net/liberar-onu",
-          combinedData
-        );
+    let cliente = this.selectedOnu;
+    this.verificarSinal(cliente);
 
-        if (response.status === 200) {
-          this.loading = false;
-        }
-        this.notificar(
-          TipoNotificacao.SUCESSO,
-          "EXCELENTE!",
-          `Dados sendo aferidos...`
-        );
+    // Handle the response here
+    console.log("Response from API:", response.data);
 
-        let cliente = this.selectedOnu;
-        
-        this.verificarSinal(cliente);
-
-        // Handle the response here
-        console.log("Response from API:", response.data);
-
-        // Close the Liberation Modal after processing the response
-      } catch (error) {
-        console.error("Error in POST request:", error);
-        alert(
-          "Ocorreu um erro ao cadastrar a ONU. Por favor, tente novamente mais tarde."
-        );
-      }
-    },
+    // Close the Liberation Modal after processing the response
+  } catch (error) {
+    console.error("Error in POST request:", error);
+    alert(
+      "Ocorreu um erro ao cadastrar a ONU. Por favor, tente novamente mais tarde."
+    );
+  }
+}
   },
   beforeMount() {
     this.fetchData();

@@ -197,7 +197,7 @@ export default defineComponent({
 
   computed: {
     filteredOnuClient(): IOnuDataResponse[] {
-      const query = this.searchQuery.trim().toLowerCase();
+      const query = this.searchQuery.toLowerCase();
       if (!query) {
         // If the search query is empty, reset the filteredOnuClient array and return an empty array
         this.clearFilteredOnuClient();
@@ -205,7 +205,7 @@ export default defineComponent({
       } else {
         // Filter the onuClient based on the search query
         return this.onuClient.filter((cliente: IOnuDataResponse) => {
-          const name = cliente.name ? cliente.name.trim().toLowerCase() : '';
+          const name = cliente.name ? cliente.name.toLowerCase() : '';
           const mac = cliente.mac ? cliente.mac.trim().toLowerCase() : '';
           return name.startsWith(query) || mac.startsWith(query)
         });
