@@ -71,7 +71,7 @@
               <th>Status</th>
               <th>Rx</th>
               <th>Tx</th>
-            </tr>
+              </tr>
           </thead>
           <tbody>
             <tr v-for="(data, mac) in onuData" :key="mac" class="onu-item">
@@ -86,6 +86,7 @@
       </section>
       <footer class="modal-card-foot custom-background">
         <button class="button" @click="closeOnuDataModal">Fechar</button>
+        <button class="button is-primary" @click="generatePDF(selectedRamal)">Download PDF</button>
       </footer>
     </div>
   </div>
@@ -105,6 +106,8 @@ import IOnu from "../interfaces/IOnu";
 import IOnuData from "../interfaces/IOnuData";
 import IStatus from "../interfaces/IStatus";
 import IAuthData from "../interfaces/IAuthData";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 import Box from "./Box.vue";
 import { TipoNotificacao } from "@/interfaces/INotificação";
 import useNotificador from "@/hooks/notificador";
@@ -134,6 +137,7 @@ export default defineComponent({
       activeDropdown: null as string | null,
       searchQuery: "",
       showModal: false,
+      pdfData: [] as Array<{ Name: string, Status: string, Rx: string, Tx: string }>,
       onus: [] as IOnu[],
       selectedOltIp: "",
       selectedPonVlan: "",
@@ -246,6 +250,7 @@ export default defineComponent({
 
       return formattedData;
     },
+   
     uniqueOltNames(): string[] {
       // Get unique OLT names from fetchedRamais
       return [
@@ -308,6 +313,34 @@ export default defineComponent({
         console.warn("No OLT selected. Please select an OLT.");
       }
     },
+
+    generatePDF() {
+  const doc = new jsPDF();
+    // Introductory text section
+    const introTable = [
+    ["Nome do ramal:", this.selectedRamal?.oltRamal],
+    ["ONUs:", this.onuCount],
+    ["Media de RX:", this.averagePowerLevel],
+    ["Media de TX:", this.averageRSSI]
+  ];
+
+  doc.autoTable({
+    head: introTable,
+    startY: 10,
+    theme: 'plain', // Use 'plain' theme to remove default styling
+  });
+  const header = [["Nome", "Status", "Rx", "Tx"]];
+  const data = this.pdfData.map(row => [row.Name, row.Status, row.Rx, row.Tx]);
+
+  doc.autoTable({
+    head: header,
+    body: data,
+  });
+
+  
+
+  doc.save(`${this.selectedRamal?.oltRamal}.pdf`);
+},
     closeModalAndRefresh() {
       // Close the modal
       this.showModal = false;
@@ -379,6 +412,13 @@ export default defineComponent({
         // Store the selected OLT IP and PON for the table header
         this.selectedOltIp = ramal.oltIp;
         this.selectedOltPon = ramal.oltPon;
+        this.selectedRamal = ramal;
+        this.pdfData = Object.values(this.onuData).map(data => ({
+        Name: data.name,
+        Status: data.Status,
+        Rx: data["Power Level"],
+        Tx: data.RSSI,
+      }));
 
         // Show the ONU data modal
         this.loading = false;
