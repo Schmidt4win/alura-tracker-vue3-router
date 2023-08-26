@@ -1,12 +1,8 @@
 <template>
   <div class="max-container">
     <div class="search-container">
-      <input
-        class="input"
-        type="text"
-        v-model="searchQuery"
-        placeholder="VLAN= OLT + PON, EXEMPLO: OLT 3 + PON 11 = 2311 "
-      />
+      <input class="input" type="text" v-model="searchQuery"
+        placeholder="VLAN= OLT + PON, EXEMPLO: OLT 3 + PON 11 = 2311 " />
     </div>
     <div class="columns is-mobile">
       <!-- Add columns class here and is-mobile class for responsiveness -->
@@ -16,11 +12,7 @@
           <div class="select-container">
             <select v-model="selectedOltIp" class="custom-select">
               <option value="">Select OLT</option>
-              <option
-                v-for="oltName in uniqueOltNames"
-                :value="oltName"
-                :key="oltName"
-              >
+              <option v-for="oltName in uniqueOltNames" :value="oltName" :key="oltName">
                 {{ oltName }}
               </option>
             </select>
@@ -49,40 +41,38 @@
       </Box>
     </div>
 
-   
-   
+
+
   </div>
   <div class="modal is-active" v-if="showOnuDataModal">
     <div class="modal-background"></div>
     <div class="modal-card">
-        <div class="modal-title">
-          <h1>Clientes ({{ onuCount }} ONUs)</h1>
-          <p>Media de Rx: {{ averagePowerLevel }}</p>
-          <p>Media de Tx: {{ averageRSSI }}</p>
-        </div>
-      <section
-        class="modal-card-body custom-terminal-background custom-text-color"
-      >
-      <div class="table-container">
-        <table class="table is-fullwidth is-bordered is-striped is-narrow">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Status</th>
-              <th>Rx</th>
-              <th>Tx</th>
+      <div class="modal-title">
+        <h1>Clientes ({{ onuCount }} ONUs)</h1>
+        <p>Media de Rx: {{ averagePowerLevel }}</p>
+        <p>Media de Tx: {{ averageRSSI }}</p>
+      </div>
+      <section class="modal-card-body custom-terminal-background custom-text-color">
+        <div class="table-container">
+          <table class="table is-fullwidth is-bordered is-striped is-narrow">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Rx</th>
+                <th>Tx</th>
               </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(data, mac) in onuData" :key="mac" class="onu-item">
-              <td>{{ data.name }}</td>
-              <td>{{ data.Status }}</td>
-              <td>{{ data["Power Level"] }}</td>
-              <td>{{ data.RSSI }}</td>
-            </tr>
-          </tbody>
-        </table>
-    </div>
+            </thead>
+            <tbody>
+              <tr v-for="(data, mac) in onuData" :key="mac" class="onu-item">
+                <td>{{ data.name }}</td>
+                <td>{{ data.Status }}</td>
+                <td>{{ data["Power Level"] }}</td>
+                <td>{{ data.RSSI }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
       <footer class="modal-card-foot custom-background">
         <button class="button" @click="closeOnuDataModal">Fechar</button>
@@ -169,29 +159,29 @@ export default defineComponent({
   },
   computed: {
     onuCount(): number {
-    return Object.keys(this.onuData).length;
-  },
+      return Object.keys(this.onuData).length;
+    },
     averagePowerLevel(): string {
-    const powerLevels = Object.values(this.onuData)
-      .map((onu) => parseFloat(onu["Power Level"]))
-      .filter((val) => !isNaN(val));
+      const powerLevels = Object.values(this.onuData)
+        .map((onu) => parseFloat(onu["Power Level"]))
+        .filter((val) => !isNaN(val));
 
-    if (powerLevels.length === 0) return "";
+      if (powerLevels.length === 0) return "";
 
-    const average = powerLevels.reduce((acc, val) => acc + val, 0) / powerLevels.length;
-    return `${average.toFixed(2)}dBm `;
-  },
+      const average = powerLevels.reduce((acc, val) => acc + val, 0) / powerLevels.length;
+      return `${average.toFixed(2)}dBm `;
+    },
 
-  averageRSSI(): string {
-    const rssis = Object.values(this.onuData)
-      .map((onu) => parseFloat(onu["RSSI"]))
-      .filter((val) => !isNaN(val));
+    averageRSSI(): string {
+      const rssis = Object.values(this.onuData)
+        .map((onu) => parseFloat(onu["RSSI"]))
+        .filter((val) => !isNaN(val));
 
-    if (rssis.length === 0) return "";
+      if (rssis.length === 0) return "";
 
-    const average = rssis.reduce((acc, val) => acc + val, 0) / rssis.length;
-    return `${average.toFixed(2)}dBm `;
-  },
+      const average = rssis.reduce((acc, val) => acc + val, 0) / rssis.length;
+      return `${average.toFixed(2)}dBm `;
+    },
     filteredRamais(): IRamal[] {
       if (!this.searchQuery) {
         if (this.selectedOltIp) {
@@ -250,7 +240,7 @@ export default defineComponent({
 
       return formattedData;
     },
-   
+
     uniqueOltNames(): string[] {
       // Get unique OLT names from fetchedRamais
       return [
@@ -315,32 +305,32 @@ export default defineComponent({
     },
 
     generatePDF() {
-  const doc = new jsPDF();
-    // Introductory text section
-    const introTable = [
-    ["Nome do ramal:", this.selectedRamal?.oltRamal],
-    ["ONUs:", this.onuCount],
-    ["Media de RX:", this.averagePowerLevel],
-    ["Media de TX:", this.averageRSSI]
-  ];
+      const doc = new jsPDF();
+      // Introductory text section
+      const introTable = [
+        ["Nome do ramal:", this.selectedRamal?.oltRamal],
+        ["ONUs:", this.onuCount],
+        ["Media de RX:", this.averagePowerLevel],
+        ["Media de TX:", this.averageRSSI]
+      ];
 
-  doc.autoTable({
-    head: introTable,
-    startY: 10,
-    theme: 'plain', // Use 'plain' theme to remove default styling
-  });
-  const header = [["Nome", "Status", "Rx", "Tx"]];
-  const data = this.pdfData.map(row => [row.Name, row.Status, row.Rx, row.Tx]);
+      doc.autoTable({
+        head: introTable,
+        startY: 10,
+        theme: 'plain', // Use 'plain' theme to remove default styling
+      });
+      const header = [["Nome", "Status", "Rx", "Tx"]];
+      const data = this.pdfData.map(row => [row.Name, row.Status, row.Rx, row.Tx]);
 
-  doc.autoTable({
-    head: header,
-    body: data,
-  });
+      doc.autoTable({
+        head: header,
+        body: data,
+      });
 
-  
 
-  doc.save(`${this.selectedRamal?.oltRamal}.pdf`);
-},
+
+      doc.save(`${this.selectedRamal?.oltRamal}.pdf`);
+    },
     closeModalAndRefresh() {
       // Close the modal
       this.showModal = false;
@@ -414,11 +404,11 @@ export default defineComponent({
         this.selectedOltPon = ramal.oltPon;
         this.selectedRamal = ramal;
         this.pdfData = Object.values(this.onuData).map(data => ({
-        Name: data.name,
-        Status: data.Status,
-        Rx: data["Power Level"],
-        Tx: data.RSSI,
-      }));
+          Name: data.name,
+          Status: data.Status,
+          Rx: data["Power Level"],
+          Tx: data.RSSI,
+        }));
 
         // Show the ONU data modal
         this.loading = false;
@@ -499,6 +489,7 @@ export default defineComponent({
 .custom-background {
   background-color: aliceblue;
 }
+
 .modal-title {
   padding: 1rem;
   background-color: #f5f5f5;
@@ -585,8 +576,10 @@ export default defineComponent({
   display: block !important;
   /* Force the background to be visible */
 }
+
 .table-container {
-  max-height: calc(100vh - 360px); /* Adjust the height as needed */
+  max-height: calc(100vh - 360px);
+  /* Adjust the height as needed */
   overflow-y: auto;
   /* Set the max height and add scroll to the tbody */
 }
